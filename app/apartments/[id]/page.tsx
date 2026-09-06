@@ -6,6 +6,8 @@ import {
   updateApartmentStatusAction,
   updateApartmentMaklervertragAction,
 } from '@/app/actions/apartments';
+import { deleteDocumentAction } from '@/app/actions/documents';
+import { DocumentDropzone } from '@/components/DocumentDropzone';
 
 export default async function ApartmentDetailPage({ params }: { params: { id: string } }) {
   const apartment = await getApartment(params.id);
@@ -130,6 +132,28 @@ export default async function ApartmentDetailPage({ params }: { params: { id: st
           </select>
           <button type="submit" className="px-3 py-1 border rounded">Update</button>
         </form>
+      </section>
+
+      <section className="space-y-3">
+        <h2 className="text-lg font-medium">Documents</h2>
+        <ul className="space-y-2 text-sm">
+          {apartment.documents.map((document) => (
+            <li key={document.id} className="flex items-center gap-3 border rounded px-3 py-2">
+              <span>📄 {document.filename}</span>
+              <span className="text-gray-400">Added {document.createdAt.toLocaleDateString('de-DE')}</span>
+              <a href={`/api/files/${document.filePath}`} target="_blank" rel="noreferrer" className="text-blue-600">
+                Open
+              </a>
+              <a href={`/api/files/${document.filePath}?download=1`} className="text-blue-600">
+                Download
+              </a>
+              <form action={deleteDocumentAction.bind(null, apartment.id, document.id)}>
+                <button type="submit" className="text-red-600">Delete</button>
+              </form>
+            </li>
+          ))}
+        </ul>
+        <DocumentDropzone apartmentId={apartment.id} />
       </section>
     </main>
   );
