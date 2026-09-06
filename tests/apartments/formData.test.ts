@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { parseManualApartmentForm } from '@/lib/apartments/formData';
+import { parseManualApartmentForm, parseApartmentPropertiesForm } from '@/lib/apartments/formData';
 
 describe('parseManualApartmentForm', () => {
   it('parses filled fields', () => {
@@ -26,5 +26,31 @@ describe('parseManualApartmentForm', () => {
     const input = parseManualApartmentForm(new FormData());
 
     expect(input).toEqual({ source: 'MANUAL' });
+  });
+});
+
+describe('parseApartmentPropertiesForm', () => {
+  it('parses all property fields including booleans', () => {
+    const formData = new FormData();
+    formData.set('title', 'Updated title');
+    formData.set('floor', '3');
+    formData.set('balcony', 'true');
+    formData.set('elevator', 'false');
+    formData.set('locationRating', '4');
+
+    const input = parseApartmentPropertiesForm(formData);
+
+    expect(input).toEqual({
+      title: 'Updated title',
+      floor: '3',
+      balcony: true,
+      elevator: false,
+      locationRating: 4,
+    });
+  });
+
+  it('omits fields left blank', () => {
+    const input = parseApartmentPropertiesForm(new FormData());
+    expect(input).toEqual({});
   });
 });
