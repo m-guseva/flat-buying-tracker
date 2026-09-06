@@ -10,8 +10,9 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Placeholder model to enable client generation
-// Will be replaced in Task 2
+// Temporary placeholder model to enable Prisma client generation.
+// Required because prisma@5.16.0 cannot generate without at least one model.
+// This model and schema structure will be replaced with the real domain models in Task 2.
 model Placeholder {
   id Int @id @default(autoincrement())
 }
