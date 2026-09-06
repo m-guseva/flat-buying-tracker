@@ -93,11 +93,16 @@ interface FileStorage {
 Fixes one gap in `specs.md`: §4 (scraping) asks for `Maklerprovision`, but
 the data model in §21 omits it. Added below.
 
+Prisma's SQLite connector has no native `enum` type support (a permanent
+SQLite limitation), so `source`, `status`, and `maklervertragStatus` are
+`String` columns; the fixed value sets are enforced as TypeScript union
+types in the repository layer instead of as Prisma enums.
+
 ```prisma
 model Apartment {
   id                 String   @id @default(cuid())
   title              String?
-  source             Source
+  source             String
   sourceUrl          String?
   address            String?
   price              Float?
@@ -112,8 +117,8 @@ model Apartment {
   maklerprovision    String?
   locationRating     Int?
   personalRating     Int?
-  status             Status   @default(NOT_CONTACTED)
-  maklervertragStatus MaklervertragStatus @default(NOT_RECEIVED)
+  status             String   @default("NOT_CONTACTED")
+  maklervertragStatus String  @default("NOT_RECEIVED")
   notes              String?
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
@@ -140,37 +145,14 @@ model Document {
   fileType    String
   filePath    String
   createdAt   DateTime  @default(now())
-  metadata    String?
 }
 
 model StatusHistory {
   id          String    @id @default(cuid())
   apartmentId String
   apartment   Apartment @relation(fields: [apartmentId], references: [id])
-  status      Status
+  status      String
   timestamp   DateTime  @default(now())
-}
-
-enum Source {
-  IMMOSCOUT24
-  IMMOWELT
-  MANUAL
-}
-
-enum Status {
-  NOT_CONTACTED
-  CONTACTED
-  RECEIVED_EXPOSE
-  SETUP_VIEWING
-  POST_VIEWING
-  INTEREST_FOR_PURCHASE
-}
-
-enum MaklervertragStatus {
-  NOT_RECEIVED
-  RECEIVED
-  SIGNED
-  WIDERRUF
 }
 ```
 

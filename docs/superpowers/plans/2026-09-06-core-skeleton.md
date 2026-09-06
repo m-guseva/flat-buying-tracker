@@ -183,11 +183,18 @@ git commit -m "chore: scaffold Next.js app with Prisma/SQLite and Vitest"
 
 Replace the contents of `prisma/schema.prisma` (keep the existing `generator` and `datasource` blocks from Task 1, add the models/enums below):
 
+Prisma's SQLite connector does not support native `enum` types at all (a
+permanent SQLite limitation, not a version issue). `source`, `status`, and
+`maklervertragStatus` are `String` columns instead; the fixed set of valid
+values is enforced in application code as TypeScript union types (defined
+in `lib/db/apartments.ts`, Step 3 below — those types are the source of
+truth other tasks import from, not `@prisma/client`).
+
 ```prisma
 model Apartment {
   id                  String   @id @default(cuid())
   title               String?
-  source              Source
+  source              String
   sourceUrl           String?
   address             String?
   price               Float?
@@ -202,8 +209,8 @@ model Apartment {
   maklerprovision     String?
   locationRating      Int?
   personalRating      Int?
-  status              Status   @default(NOT_CONTACTED)
-  maklervertragStatus MaklervertragStatus @default(NOT_RECEIVED)
+  status              String   @default("NOT_CONTACTED")
+  maklervertragStatus String   @default("NOT_RECEIVED")
   notes               String?
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
@@ -236,30 +243,8 @@ model StatusHistory {
   id          String    @id @default(cuid())
   apartmentId String
   apartment   Apartment @relation(fields: [apartmentId], references: [id])
-  status      Status
+  status      String
   timestamp   DateTime  @default(now())
-}
-
-enum Source {
-  IMMOSCOUT24
-  IMMOWELT
-  MANUAL
-}
-
-enum Status {
-  NOT_CONTACTED
-  CONTACTED
-  RECEIVED_EXPOSE
-  SETUP_VIEWING
-  POST_VIEWING
-  INTEREST_FOR_PURCHASE
-}
-
-enum MaklervertragStatus {
-  NOT_RECEIVED
-  RECEIVED
-  SIGNED
-  WIDERRUF
 }
 ```
 
@@ -390,7 +375,17 @@ Create `lib/db/apartments.ts`:
 
 ```ts
 import { prisma } from './client';
-import type { Apartment, Status, MaklervertragStatus } from '@prisma/client';
+import type { Apartment } from '@prisma/client';
+
+export type Status =
+  | 'NOT_CONTACTED'
+  | 'CONTACTED'
+  | 'RECEIVED_EXPOSE'
+  | 'SETUP_VIEWING'
+  | 'POST_VIEWING'
+  | 'INTEREST_FOR_PURCHASE';
+
+export type MaklervertragStatus = 'NOT_RECEIVED' | 'RECEIVED' | 'SIGNED' | 'WIDERRUF';
 
 export type CreateApartmentInput = {
   title?: string;
@@ -828,11 +823,12 @@ Create `app/actions/apartments.ts`:
 
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import type { Status, MaklervertragStatus } from '@prisma/client';
 import {
   createApartment,
   updateApartment,
   updateApartmentStatus,
+  type Status,
+  type MaklervertragStatus,
 } from '@/lib/db/apartments';
 import { parseManualApartmentForm } from '@/lib/apartments/formData';
 
@@ -1372,7 +1368,7 @@ git commit -m "feat: add apartment detail page with editable properties"
 
 - [ ] **Step 1: Add the status and Maklervertrag actions**
 
-Append to `app/actions/apartments.ts` (add the `Status`/`MaklervertragStatus` type imports at the top if not already present from Task 5):
+Append to `app/actions/apartments.ts` (the `Status`/`MaklervertragStatus` type imports are already at the top from Task 5's `@/lib/db/apartments` import):
 
 ```ts
 export async function updateApartmentStatusAction(id: string, formData: FormData) {
