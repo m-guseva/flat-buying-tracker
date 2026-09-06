@@ -36,3 +36,8 @@ export async function updateApartmentMaklervertragAction(id: string, formData: F
   revalidatePath(`/apartments/${id}`);
   revalidatePath('/');
 }
+
+export async function updateApartmentNotesAction(id: string, notes: string) {
+  await updateApartment(id, { notes });
+  revalidatePath(`/apartments/${id}`);
+}
