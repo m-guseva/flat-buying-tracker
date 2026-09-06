@@ -183,6 +183,12 @@ git commit -m "chore: scaffold Next.js app with Prisma/SQLite and Vitest"
 
 Replace the contents of `prisma/schema.prisma` (keep the existing `generator` and `datasource` blocks from Task 1, add the models/enums below):
 
+`Image`, `Document`, and `StatusHistory`'s relation to `Apartment` all carry
+`onDelete: Cascade` — without it, Prisma defaults to `ON DELETE RESTRICT`,
+and since `createApartment` always creates a `StatusHistory` row,
+`deleteApartment` (Step 6 below) would always fail with a foreign key
+constraint violation.
+
 Prisma's SQLite connector does not support native `enum` types at all (a
 permanent SQLite limitation, not a version issue). `source`, `status`, and
 `maklervertragStatus` are `String` columns instead; the fixed set of valid
@@ -223,7 +229,7 @@ model Apartment {
 model Image {
   id          String    @id @default(cuid())
   apartmentId String
-  apartment   Apartment @relation(fields: [apartmentId], references: [id])
+  apartment   Apartment @relation(fields: [apartmentId], references: [id], onDelete: Cascade)
   filePath    String
   order       Int
   createdAt   DateTime  @default(now())
@@ -232,7 +238,7 @@ model Image {
 model Document {
   id          String    @id @default(cuid())
   apartmentId String
-  apartment   Apartment @relation(fields: [apartmentId], references: [id])
+  apartment   Apartment @relation(fields: [apartmentId], references: [id], onDelete: Cascade)
   filename    String
   fileType    String
   filePath    String
@@ -242,7 +248,7 @@ model Document {
 model StatusHistory {
   id          String    @id @default(cuid())
   apartmentId String
-  apartment   Apartment @relation(fields: [apartmentId], references: [id])
+  apartment   Apartment @relation(fields: [apartmentId], references: [id], onDelete: Cascade)
   status      String
   timestamp   DateTime  @default(now())
 }

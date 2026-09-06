@@ -131,7 +131,7 @@ model Apartment {
 model Image {
   id          String    @id @default(cuid())
   apartmentId String
-  apartment   Apartment @relation(fields: [apartmentId], references: [id])
+  apartment   Apartment @relation(fields: [apartmentId], references: [id], onDelete: Cascade)
   filePath    String
   order       Int
   createdAt   DateTime  @default(now())
@@ -140,7 +140,7 @@ model Image {
 model Document {
   id          String    @id @default(cuid())
   apartmentId String
-  apartment   Apartment @relation(fields: [apartmentId], references: [id])
+  apartment   Apartment @relation(fields: [apartmentId], references: [id], onDelete: Cascade)
   filename    String
   fileType    String
   filePath    String
@@ -150,7 +150,7 @@ model Document {
 model StatusHistory {
   id          String    @id @default(cuid())
   apartmentId String
-  apartment   Apartment @relation(fields: [apartmentId], references: [id])
+  apartment   Apartment @relation(fields: [apartmentId], references: [id], onDelete: Cascade)
   status      String
   timestamp   DateTime  @default(now())
 }
