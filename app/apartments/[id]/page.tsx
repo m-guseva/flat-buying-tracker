@@ -144,7 +144,10 @@ export default async function ApartmentDetailPage({ params }: { params: { id: st
               <a href={`/api/files/${document.filePath}`} target="_blank" rel="noreferrer" className="text-blue-600">
                 Open
               </a>
-              <a href={`/api/files/${document.filePath}?download=1`} className="text-blue-600">
+              <a
+                href={`/api/files/${document.filePath}?download=1&filename=${encodeURIComponent(document.filename)}`}
+                className="text-blue-600"
+              >
                 Download
               </a>
               <form action={deleteDocumentAction.bind(null, apartment.id, document.id)}>
