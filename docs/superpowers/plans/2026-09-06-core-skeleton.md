@@ -1491,11 +1491,29 @@ git commit -m "feat: add status history and Maklervertrag tracking to detail pag
 
 Create `app/actions/documents.ts`:
 
+Next.js 14.2.35's direct server-action invocation (calling `uploadDocumentAction`
+straight from a client event handler, as `DocumentDropzone` below does —
+as opposed to a `<form action={...}>` submit) mis-decodes non-ASCII `File`
+names as Latin-1 instead of UTF-8, corrupting them into mojibake (e.g.
+`Müllerstraße.pdf` → `MÃ¼llerstraÃŸe.pdf`). Confirmed via raw wire capture
+that the browser sends correct UTF-8 bytes — the corruption happens in
+Next's own action-body parsing, before `formData.get('file')` ever sees
+it. `fixMojibake` reverses it: re-interpreting the (wrongly-decoded)
+string's char codes as Latin-1 bytes and decoding those as UTF-8 restores
+the original name. This is safe for plain ASCII names (a no-op, since
+ASCII is identical in both encodings) and this action is the only place
+in the app a browser `File` name is ever read, so there's no other input
+this could mis-fix.
+
 ```ts
 'use server';
 
 import { revalidatePath } from 'next/cache';
 import { createDocument, deleteDocument } from '@/lib/db/documents';
+
+function fixMojibake(name: string): string {
+  return Buffer.from(name, 'latin1').toString('utf8');
+}
 
 export async function uploadDocumentAction(apartmentId: string, formData: FormData) {
   const file = formData.get('file');
@@ -1503,7 +1521,7 @@ export async function uploadDocumentAction(apartmentId: string, formData: FormDa
     throw new Error('No file provided');
   }
   const buffer = Buffer.from(await file.arrayBuffer());
-  await createDocument(apartmentId, buffer, file.name, file.type || 'application/octet-stream');
+  await createDocument(apartmentId, buffer, fixMojibake(file.name), file.type || 'application/octet-stream');
   revalidatePath(`/apartments/${apartmentId}`);
 }
 
