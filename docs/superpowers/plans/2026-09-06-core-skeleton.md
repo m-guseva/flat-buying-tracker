@@ -1010,11 +1010,24 @@ so a `reference` containing `..` can resolve outside `STORAGE_ROOT`. Legitimate
 references are always `<apartmentId>/<filename>`, so reject any URL segment
 that isn't a plain path component before it ever reaches `fileStorage`.
 
+Stored files are named `<timestamp>-<sanitized-original-name>` on disk
+(Task 3's `fileStorage.save`), so `path.basename(reference)` alone would
+give downloads an ugly, timestamp-prefixed filename instead of the name
+the user actually uploaded. The caller (Task 9's document list) passes the
+real filename via a `filename` query param; the route uses it when
+present, sanitized against header injection (stripped of quotes/CR/LF),
+falling back to `path.basename(reference)` when it's absent (e.g. images,
+which don't go through this param).
+
 ```ts
 import { NextRequest, NextResponse } from 'next/server';
 import { Readable } from 'stream';
 import path from 'path';
 import { fileStorage } from '@/lib/storage/fileStorage';
+
+function sanitizeDownloadFilename(name: string): string {
+  return name.replace(/[\r\n"]/g, '');
+}
 
 export async function GET(request: NextRequest, { params }: { params: { path: string[] } }) {
   if (params.path.some((segment) => segment === '..' || segment === '.' || segment.includes('/'))) {
@@ -1023,13 +1036,15 @@ export async function GET(request: NextRequest, { params }: { params: { path: st
 
   const reference = params.path.join('/');
   const download = request.nextUrl.searchParams.get('download') === '1';
+  const requestedFilename = request.nextUrl.searchParams.get('filename');
 
   try {
     const stream = await fileStorage.read(reference);
     const webStream = Readable.toWeb(stream) as ReadableStream;
     const headers = new Headers();
     if (download) {
-      headers.set('Content-Disposition', `attachment; filename="${path.basename(reference)}"`);
+      const filename = requestedFilename ? sanitizeDownloadFilename(requestedFilename) : path.basename(reference);
+      headers.set('Content-Disposition', `attachment; filename="${filename}"`);
     }
     return new NextResponse(webStream, { headers });
   } catch {
@@ -1569,7 +1584,10 @@ In `app/apartments/[id]/page.tsx`, import `DocumentDropzone` from `@/components/
         <a href={`/api/files/${document.filePath}`} target="_blank" rel="noreferrer" className="text-blue-600">
           Open
         </a>
-        <a href={`/api/files/${document.filePath}?download=1`} className="text-blue-600">
+        <a
+          href={`/api/files/${document.filePath}?download=1&filename=${encodeURIComponent(document.filename)}`}
+          className="text-blue-600"
+        >
           Download
         </a>
         <form action={deleteDocumentAction.bind(null, apartment.id, document.id)}>
