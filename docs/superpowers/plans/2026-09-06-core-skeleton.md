@@ -6,7 +6,7 @@
 
 **Architecture:** Single Next.js (App Router, TypeScript) app. SQLite via Prisma for data. Local filesystem for documents/images behind a small storage interface. Server Actions for all mutations; a single `/api/files/[...path]` route streams stored files back to the browser.
 
-**Tech Stack:** Next.js 14.2.5 (App Router), TypeScript, Prisma + SQLite, Tailwind CSS, Vitest.
+**Tech Stack:** Next.js 14.2.35+ (App Router), TypeScript, Prisma + SQLite, Tailwind CSS, Vitest.
 
 **Spec:** `docs/superpowers/specs/2026-09-06-flat-buying-tracker-design.md` (technical design), `specs.md` (product spec).
 
@@ -26,7 +26,7 @@ per apartment — manual entry alone rarely produces more than one.
 ## Global Constraints
 
 - TypeScript strict mode (default for `create-next-app --typescript`).
-- Next.js version pinned to 14.2.5 — its App Router uses synchronous `params`, unlike 15+. Do not upgrade mid-plan.
+- Next.js stays on the 14.x major version (installed via `create-next-app@14.2.5`, then patched to `14.2.35+` for a critical advisory) — its App Router uses synchronous `params`, unlike 15+. Do not upgrade to 15/16 mid-plan.
 - All currency/date display uses German locale formatting (`toLocaleString('de-DE')`).
 - Documents and images are stored on disk under `./data/files/<apartmentId>/...`, never inline in the database (per spec §21 / design doc §4).
 - `./data/` (the SQLite file and stored files) and `.env` are git-ignored — this is personal apartment-search data, not code.
@@ -47,13 +47,39 @@ per apartment — manual entry alone rarely produces more than one.
 
 - [ ] **Step 1: Scaffold the Next.js app**
 
-Run in the project root (already a git repo):
+`create-next-app` refuses to run in a non-empty directory and, run
+non-interactively (no TTY), cannot answer its own prompts — it will hard-fail
+listing `specs.md`/`docs/`/`.superpowers/` as conflicts rather than asking.
+Move the existing tracked files aside, scaffold, then move them back:
 
 ```bash
-npx create-next-app@14.2.5 . --typescript --eslint --app --tailwind --src-dir=false --import-alias "@/*" --use-npm
+mkdir -p /tmp/core-skeleton-stage
+mv specs.md docs .superpowers /tmp/core-skeleton-stage/ 2>/dev/null
+npx create-next-app@14.2.5 . --typescript --eslint --app --tailwind --no-src-dir --import-alias "@/*" --use-npm --disable-git
+mv /tmp/core-skeleton-stage/* .
+rmdir /tmp/core-skeleton-stage
 ```
 
-When prompted about the current directory not being empty, confirm yes (it contains `specs.md` and `docs/`, which is fine).
+(`--disable-git` skips create-next-app's own `git init` attempt — this
+directory is already part of a git worktree. Use `--no-src-dir`, not
+`--src-dir=false` — the latter is silently ignored by this CLI's argument
+parser and the tool falls back to its interactive prompt.)
+
+`create-next-app@14.2.5` installs a `next` version with a since-published
+critical security advisory. Patch it in place — this stays on the Next.js
+14 major version (no async-params breaking change) — and verify:
+
+```bash
+npm audit fix --force
+npm ls next
+```
+
+Expected: `next@14.2.35` (or newer 14.x). Two high-severity advisories will
+remain unresolved (`eslint-config-next`'s transitive `glob` dependency, and
+`postcss`'s source-map handling) — fixing those requires jumping to Next.js
+16, a larger change than this project needs. Both are dev-tooling-only
+(not reachable through the running app), so leave them; do not force the
+Next.js 16 upgrade.
 
 - [ ] **Step 2: Verify the dev server runs**
 
