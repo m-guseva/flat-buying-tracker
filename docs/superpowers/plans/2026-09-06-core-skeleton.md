@@ -1004,6 +1004,12 @@ Expected: all tests pass.
 
 Create `app/api/files/[...path]/route.ts`:
 
+`fileStorage.read`/`.delete` build their real path via `path.join(STORAGE_ROOT,
+reference)`, which normalizes away `..` segments rather than rejecting them —
+so a `reference` containing `..` can resolve outside `STORAGE_ROOT`. Legitimate
+references are always `<apartmentId>/<filename>`, so reject any URL segment
+that isn't a plain path component before it ever reaches `fileStorage`.
+
 ```ts
 import { NextRequest, NextResponse } from 'next/server';
 import { Readable } from 'stream';
@@ -1011,6 +1017,10 @@ import path from 'path';
 import { fileStorage } from '@/lib/storage/fileStorage';
 
 export async function GET(request: NextRequest, { params }: { params: { path: string[] } }) {
+  if (params.path.some((segment) => segment === '..' || segment === '.' || segment.includes('/'))) {
+    return NextResponse.json({ error: 'Not found' }, { status: 404 });
+  }
+
   const reference = params.path.join('/');
   const download = request.nextUrl.searchParams.get('download') === '1';
 
