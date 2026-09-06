@@ -377,6 +377,13 @@ Expected: FAIL — `lib/db/apartments` does not exist yet.
 
 - [ ] **Step 6: Implement the repository**
 
+Every `orderBy` on `createdAt`/`timestamp` below carries `id: 'desc'` as a
+secondary sort key. `DateTime @default(now())` has millisecond resolution,
+and rows created back-to-back (as the tests below do) routinely land in
+the same millisecond — without a tiebreaker, "newest first" is
+nondeterministic on ties. cuids are k-sortable, so `id: 'desc'` breaks ties
+in the same direction as the timestamp.
+
 Create `lib/db/apartments.ts`:
 
 ```ts
@@ -433,8 +440,8 @@ export async function getApartment(id: string) {
     where: { id },
     include: {
       images: { orderBy: { order: 'asc' } },
-      documents: { orderBy: { createdAt: 'desc' } },
-      statusHistory: { orderBy: { timestamp: 'desc' } },
+      documents: { orderBy: [{ createdAt: 'desc' }, { id: 'desc' }] },
+      statusHistory: { orderBy: [{ timestamp: 'desc' }, { id: 'desc' }] },
     },
   });
 }
@@ -442,7 +449,7 @@ export async function getApartment(id: string) {
 export async function listApartments() {
   return prisma.apartment.findMany({
     include: { images: { orderBy: { order: 'asc' }, take: 1 } },
-    orderBy: { createdAt: 'desc' },
+    orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
   });
 }
 
