@@ -22,3 +22,17 @@ export async function updateApartmentPropertiesAction(id: string, formData: Form
   revalidatePath(`/apartments/${id}`);
   revalidatePath('/');
 }
+
+export async function updateApartmentStatusAction(id: string, formData: FormData) {
+  const status = formData.get('status')?.toString() as Status;
+  await updateApartmentStatus(id, status);
+  revalidatePath(`/apartments/${id}`);
+  revalidatePath('/');
+}
+
+export async function updateApartmentMaklervertragAction(id: string, formData: FormData) {
+  const maklervertragStatus = formData.get('maklervertragStatus')?.toString() as MaklervertragStatus;
+  await updateApartment(id, { maklervertragStatus });
+  revalidatePath(`/apartments/${id}`);
+  revalidatePath('/');
+}

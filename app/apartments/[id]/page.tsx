@@ -1,6 +1,11 @@
 import { notFound } from 'next/navigation';
 import { getApartment } from '@/lib/db/apartments';
-import { updateApartmentPropertiesAction } from '@/app/actions/apartments';
+import { STATUS_LABELS, MAKLERVERTRAG_LABELS } from '@/lib/apartments/format';
+import {
+  updateApartmentPropertiesAction,
+  updateApartmentStatusAction,
+  updateApartmentMaklervertragAction,
+} from '@/app/actions/apartments';
 
 export default async function ApartmentDetailPage({ params }: { params: { id: string } }) {
   const apartment = await getApartment(params.id);
@@ -93,6 +98,39 @@ export default async function ApartmentDetailPage({ params }: { params: { id: st
           Save
         </button>
       </form>
+
+      <section className="space-y-3">
+        <h2 className="text-lg font-medium">Process / status</h2>
+        <form action={updateApartmentStatusAction.bind(null, apartment.id)} className="flex gap-2">
+          <select name="status" defaultValue={apartment.status} className="border rounded px-2 py-1">
+            {Object.entries(STATUS_LABELS).map(([value, label]) => (
+              <option key={value} value={value}>{label}</option>
+            ))}
+          </select>
+          <button type="submit" className="px-3 py-1 border rounded">Update status</button>
+        </form>
+
+        <h3 className="text-sm font-medium text-gray-500">Status history</h3>
+        <ul className="text-sm space-y-1">
+          {apartment.statusHistory.map((entry) => (
+            <li key={entry.id}>
+              {entry.timestamp.toLocaleDateString('de-DE')} — {STATUS_LABELS[entry.status]}
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section className="space-y-3">
+        <h2 className="text-lg font-medium">Maklervertrag</h2>
+        <form action={updateApartmentMaklervertragAction.bind(null, apartment.id)} className="flex gap-2">
+          <select name="maklervertragStatus" defaultValue={apartment.maklervertragStatus} className="border rounded px-2 py-1">
+            {Object.entries(MAKLERVERTRAG_LABELS).map(([value, label]) => (
+              <option key={value} value={value}>{label}</option>
+            ))}
+          </select>
+          <button type="submit" className="px-3 py-1 border rounded">Update</button>
+        </form>
+      </section>
     </main>
   );
 }
