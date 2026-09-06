@@ -10,9 +10,58 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Temporary placeholder model to enable Prisma client generation.
-// Required because prisma@5.16.0 cannot generate without at least one model.
-// This model and schema structure will be replaced with the real domain models in Task 2.
-model Placeholder {
-  id Int @id @default(autoincrement())
+model Apartment {
+  id                  String   @id @default(cuid())
+  title               String?
+  source              String
+  sourceUrl           String?
+  address             String?
+  price               Float?
+  livingArea          Float?
+  rooms               Float?
+  floor               String?
+  balcony             Boolean?
+  elevator            Boolean?
+  kitchen             String?
+  condition           String?
+  hausgeld            Float?
+  maklerprovision     String?
+  locationRating      Int?
+  personalRating      Int?
+  status              String   @default("NOT_CONTACTED")
+  maklervertragStatus String   @default("NOT_RECEIVED")
+  notes               String?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  images        Image[]
+  documents     Document[]
+  statusHistory StatusHistory[]
+}
+
+model Image {
+  id          String    @id @default(cuid())
+  apartmentId String
+  apartment   Apartment @relation(fields: [apartmentId], references: [id], onDelete: Cascade)
+  filePath    String
+  order       Int
+  createdAt   DateTime  @default(now())
+}
+
+model Document {
+  id          String    @id @default(cuid())
+  apartmentId String
+  apartment   Apartment @relation(fields: [apartmentId], references: [id], onDelete: Cascade)
+  filename    String
+  fileType    String
+  filePath    String
+  createdAt   DateTime  @default(now())
+}
+
+model StatusHistory {
+  id          String    @id @default(cuid())
+  apartmentId String
+  apartment   Apartment @relation(fields: [apartmentId], references: [id], onDelete: Cascade)
+  status      String
+  timestamp   DateTime  @default(now())
 }
