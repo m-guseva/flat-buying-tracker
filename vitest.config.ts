@@ -1,4 +1,4 @@
-import { defineConfig } from 'vitest/config';
+import { configDefaults, defineConfig } from 'vitest/config';
 import path from 'path';
 import dotenv from 'dotenv';
 
@@ -14,5 +14,9 @@ export default defineConfig({
   },
   test: {
     environment: 'node',
+    // Claude Code worktrees live under .claude/worktrees/ inside the repo
+    // itself; without this, a nested worktree's copy of this same test
+    // suite gets picked up too, double-counting every test.
+    exclude: [...configDefaults.exclude, '**/.claude/**'],
   },
 });
