@@ -36,7 +36,7 @@ function compareBy(a: Apartment, b: Apartment, criterion: SortCriterion): number
   return criterion.direction === 'asc' ? diff : -diff;
 }
 
-export function sortApartments(apartments: Apartment[], criteria: SortCriterion[]): Apartment[] {
+export function sortApartments<T extends Apartment>(apartments: T[], criteria: SortCriterion[]): T[] {
   if (criteria.length === 0) return apartments;
   return [...apartments].sort((a, b) => {
     for (const criterion of criteria) {
