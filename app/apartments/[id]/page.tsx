@@ -8,6 +8,7 @@ import {
 } from '@/app/actions/apartments';
 import { deleteDocumentAction } from '@/app/actions/documents';
 import { DocumentDropzone } from '@/components/DocumentDropzone';
+import { ImportRetryDropzone } from '@/components/ImportRetryDropzone';
 import { NotesEditor } from '@/components/NotesEditor';
 
 export default async function ApartmentDetailPage({ params }: { params: { id: string } }) {
@@ -19,6 +20,10 @@ export default async function ApartmentDetailPage({ params }: { params: { id: st
       <h1 className="text-2xl font-semibold">
         {apartment.title ?? apartment.address ?? 'Untitled apartment'}
       </h1>
+
+      {apartment.source !== 'MANUAL' && !apartment.title && apartment.images.length === 0 && (
+        <ImportRetryDropzone apartmentId={apartment.id} />
+      )}
 
       <form action={updateApartmentPropertiesAction.bind(null, apartment.id)} className="space-y-8">
         <section className="space-y-3">
