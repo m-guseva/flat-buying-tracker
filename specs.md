@@ -764,7 +764,18 @@ The application should make it immediately obvious:
 
 ---
 
-# 25. Future direction
+# 25. Delivered beyond the original MVP scope
+
+The following were added after the MVP shipped, driven by real usage rather than by this spec — recorded here so the spec stays an accurate description of the app, not just of the original plan:
+
+* **Delete apartment** — each card has a delete control; deleting also removes the apartment's uploaded files from disk, not just its database row.
+* **Cover image selection** — within the apartment detail view, any photo in the carousel can be pinned as the card's title/cover image.
+* **Paste-to-upload images** — pasting an image (e.g. a screenshot, or a copy from Finder/a browser) anywhere on an apartment's detail view uploads it as a new photo, no dedicated upload button required.
+* **Visual redesign** — a glassmorphism-style visual language (translucent panels, backdrop blur, a soft gradient background) replaced the original plain design across cards, table, detail overlay, and forms. Section 24's UX principles (clean, personal-workspace feel) still hold; this is the concrete visual execution of them.
+
+---
+
+# 26. Future direction
 
 The long-term product can evolve into a full apartment-buying command center.
 
