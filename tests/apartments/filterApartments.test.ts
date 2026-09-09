@@ -68,6 +68,11 @@ describe('matchesFilter', () => {
     expect(matchesFilter(apartment, { id: '1', field: 'status', operator: 'eq', value: 'CONTACTED' })).toBe(true);
     expect(matchesFilter(apartment, { id: '1', field: 'status', operator: 'eq', value: 'SETUP_VIEWING' })).toBe(false);
   });
+
+  it('matches everything when the condition references an unknown field', () => {
+    const apartment = makeApartment();
+    expect(matchesFilter(apartment, { id: '1', field: 'nonexistentField', operator: 'eq', value: 'anything' })).toBe(true);
+  });
 });
 
 describe('matchesAllFilters', () => {
