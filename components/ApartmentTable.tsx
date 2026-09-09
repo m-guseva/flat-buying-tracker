@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import type { Apartment } from '@prisma/client';
-import { getField } from '@/lib/apartments/fields';
+import { getField, TABLE_COLUMN_FIELDS } from '@/lib/apartments/fields';
 import { formatPrice, STATUS_LABELS, MAKLERVERTRAG_LABELS } from '@/lib/apartments/format';
 
 function formatCell(apartment: Apartment, key: string): string {
@@ -21,13 +21,14 @@ function formatCell(apartment: Apartment, key: string): string {
 
 export function ApartmentTable({ apartments, columns }: { apartments: Apartment[]; columns: string[] }) {
   const router = useRouter();
+  const orderedColumns = TABLE_COLUMN_FIELDS.filter((field) => columns.includes(field.key)).map((field) => field.key);
 
   return (
     <div className="overflow-x-auto">
       <table className="w-full text-sm border-collapse">
         <thead>
           <tr className="border-b text-left">
-            {columns.map((key) => (
+            {orderedColumns.map((key) => (
               <th key={key} className="p-2 font-medium">
                 {getField(key)?.label ?? key}
               </th>
@@ -41,7 +42,7 @@ export function ApartmentTable({ apartments, columns }: { apartments: Apartment[
               onClick={() => router.push(`/apartments/${apartment.id}`)}
               className="border-b hover:bg-gray-50 cursor-pointer"
             >
-              {columns.map((key) => (
+              {orderedColumns.map((key) => (
                 <td key={key} className="p-2">
                   {formatCell(apartment, key)}
                 </td>
