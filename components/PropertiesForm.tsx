@@ -22,7 +22,17 @@ export function PropertiesForm({
     const formData = new FormData(event.currentTarget);
     startTransition(async () => {
       await updateApartmentPropertiesAction(apartment.id, formData);
-      if (isModal) router.back();
+      // In the overlay, back() closes it and returns to wherever it was
+      // opened from, preserving the home page's search/filter/sort state.
+      // On the full page (e.g. right after manually creating an
+      // apartment, which redirects here without ever opening the
+      // overlay), back() has no reliable "previous" to return to, so
+      // navigate home explicitly instead.
+      if (isModal) {
+        router.back();
+      } else {
+        router.push('/');
+      }
     });
   }
 
