@@ -6,6 +6,7 @@ import { DocumentDropzone } from '@/components/DocumentDropzone';
 import { ImportRetryDropzone } from '@/components/ImportRetryDropzone';
 import { NotesEditor } from '@/components/NotesEditor';
 import { ImageCarousel } from '@/components/ImageCarousel';
+import { PasteImageZone } from '@/components/PasteImageZone';
 import { PropertiesForm } from '@/components/PropertiesForm';
 
 type ApartmentWithRelations = Apartment & {
@@ -25,8 +26,11 @@ export function ApartmentDetailContent({
 }) {
   return (
     <div className="space-y-8">
-      <div className="aspect-[4/3] bg-gray-100 rounded-lg overflow-hidden">
-        <ImageCarousel images={apartment.images} alt={apartment.title ?? 'Apartment'} />
+      <div>
+        <div className="aspect-[4/3] bg-white/40 rounded-2xl overflow-hidden border border-white/60 shadow-lg shadow-indigo-100/50">
+          <ImageCarousel apartmentId={apartment.id} images={apartment.images} alt={apartment.title ?? 'Apartment'} allowSetCover />
+        </div>
+        <PasteImageZone apartmentId={apartment.id} />
       </div>
 
       <div>
@@ -37,7 +41,7 @@ export function ApartmentDetailContent({
           <p className="text-sm text-gray-500 mt-1">
             Source: {SOURCE_LABELS[apartment.source] ?? apartment.source}
             {' — '}
-            <a href={apartment.sourceUrl} target="_blank" rel="noreferrer" className="text-blue-600">
+            <a href={apartment.sourceUrl} target="_blank" rel="noreferrer" className="text-indigo-600 hover:text-indigo-700">
               Open original listing ↗
             </a>
           </p>
@@ -48,15 +52,15 @@ export function ApartmentDetailContent({
         <ImportRetryDropzone apartmentId={apartment.id} />
       )}
 
-      <section className="space-y-3">
+      <section className="glass-panel p-4 space-y-3">
         <h2 className="text-lg font-medium">Process / status</h2>
         <form action={updateApartmentStatusAction.bind(null, apartment.id)} className="flex gap-2">
-          <select name="status" defaultValue={apartment.status} className="border rounded px-2 py-1">
+          <select name="status" defaultValue={apartment.status} className="glass-input">
             {Object.entries(STATUS_LABELS).map(([value, label]) => (
               <option key={value} value={value}>{label}</option>
             ))}
           </select>
-          <button type="submit" className="px-3 py-1 border rounded">Update status</button>
+          <button type="submit" className="btn-secondary">Update status</button>
         </form>
 
         <h3 className="text-sm font-medium text-gray-500">Status history</h3>
@@ -69,38 +73,38 @@ export function ApartmentDetailContent({
         </ul>
       </section>
 
-      <section className="space-y-3">
+      <section className="glass-panel p-4 space-y-3">
         <h2 className="text-lg font-medium">Maklervertrag</h2>
         <form action={updateApartmentMaklervertragAction.bind(null, apartment.id)} className="flex gap-2">
-          <select name="maklervertragStatus" defaultValue={apartment.maklervertragStatus} className="border rounded px-2 py-1">
+          <select name="maklervertragStatus" defaultValue={apartment.maklervertragStatus} className="glass-input">
             {Object.entries(MAKLERVERTRAG_LABELS).map(([value, label]) => (
               <option key={value} value={value}>{label}</option>
             ))}
           </select>
-          <button type="submit" className="px-3 py-1 border rounded">Update</button>
+          <button type="submit" className="btn-secondary">Update</button>
         </form>
       </section>
 
       <PropertiesForm apartment={apartment} formId={PROPERTIES_FORM_ID} isModal={isModal} />
 
-      <section className="space-y-3">
+      <section className="glass-panel p-4 space-y-3">
         <h2 className="text-lg font-medium">Documents</h2>
         <ul className="space-y-2 text-sm">
           {apartment.documents.map((document) => (
-            <li key={document.id} className="flex items-center gap-3 border rounded px-3 py-2">
+            <li key={document.id} className="flex items-center gap-3 bg-white/60 border border-white/70 rounded-lg px-3 py-2">
               <span>📄 {document.filename}</span>
               <span className="text-gray-400">Added {document.createdAt.toLocaleDateString('de-DE')}</span>
-              <a href={`/api/files/${document.filePath}`} target="_blank" rel="noreferrer" className="text-blue-600">
+              <a href={`/api/files/${document.filePath}`} target="_blank" rel="noreferrer" className="text-indigo-600 hover:text-indigo-700">
                 Open
               </a>
               <a
                 href={`/api/files/${document.filePath}?download=1&filename=${encodeURIComponent(document.filename)}`}
-                className="text-blue-600"
+                className="text-indigo-600 hover:text-indigo-700"
               >
                 Download
               </a>
               <form action={deleteDocumentAction.bind(null, apartment.id, document.id)}>
-                <button type="submit" className="text-red-600">Delete</button>
+                <button type="submit" className="text-red-600 hover:text-red-700">Delete</button>
               </form>
             </li>
           ))}
@@ -108,12 +112,12 @@ export function ApartmentDetailContent({
         <DocumentDropzone apartmentId={apartment.id} />
       </section>
 
-      <section className="space-y-3">
+      <section className="glass-panel p-4 space-y-3">
         <h2 className="text-lg font-medium">Notes</h2>
         <NotesEditor apartmentId={apartment.id} initialNotes={apartment.notes ?? ''} />
       </section>
 
-      <button type="submit" form={PROPERTIES_FORM_ID} className="w-full px-4 py-2 bg-black text-white rounded">
+      <button type="submit" form={PROPERTIES_FORM_ID} className="btn-primary w-full">
         Save
       </button>
     </div>
