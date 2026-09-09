@@ -1,17 +1,18 @@
 'use client';
 
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 export function useLocalStorageState<T>(key: string, initialValue: T): [T, (value: T) => void] {
-  const [value, setValue] = useState<T>(() => {
-    if (typeof window === 'undefined') return initialValue;
+  const [value, setValue] = useState<T>(initialValue);
+
+  useEffect(() => {
     try {
       const stored = window.localStorage.getItem(key);
-      return stored ? (JSON.parse(stored) as T) : initialValue;
+      if (stored) setValue(JSON.parse(stored) as T);
     } catch {
-      return initialValue;
+      // storage unavailable (private browsing, disabled) — keep the initial value
     }
-  });
+  }, [key]);
 
   const setAndPersist = useCallback(
     (next: T) => {
@@ -19,7 +20,7 @@ export function useLocalStorageState<T>(key: string, initialValue: T): [T, (valu
       try {
         window.localStorage.setItem(key, JSON.stringify(next));
       } catch {
-        // storage unavailable (private browsing, disabled, quota) — state still updates in memory
+        // storage unavailable — state still updates in memory
       }
     },
     [key],
