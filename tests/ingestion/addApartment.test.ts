@@ -72,4 +72,24 @@ describe('addApartmentFromInput', () => {
 
     expect(second.apartmentId).not.toBe(first.apartmentId);
   });
+
+  it('returns invalid for a malformed URL string and creates no apartment', async () => {
+    const before = await prisma.apartment.count();
+
+    const result = await addApartmentFromInput({ url: 'not a url at all' });
+
+    expect(result).toEqual({ status: 'invalid' });
+    expect(await prisma.apartment.count()).toBe(before);
+    expect(downloadAndStoreImagesMock).not.toHaveBeenCalled();
+  });
+
+  it('returns invalid for uploaded HTML with no recoverable canonical/og:url and no pasted url', async () => {
+    const before = await prisma.apartment.count();
+
+    const result = await addApartmentFromInput({ html: '<html><head></head><body></body></html>' });
+
+    expect(result).toEqual({ status: 'invalid' });
+    expect(await prisma.apartment.count()).toBe(before);
+    expect(downloadAndStoreImagesMock).not.toHaveBeenCalled();
+  });
 });

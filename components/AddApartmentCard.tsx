@@ -10,7 +10,8 @@ const PROGRESS_MESSAGES = ['Fetching listing…', 'Extracting apartment informat
 type CardState =
   | { phase: 'idle' }
   | { phase: 'submitting' }
-  | { phase: 'duplicate'; existingApartmentId: string; pendingFormData: FormData };
+  | { phase: 'duplicate'; existingApartmentId: string; pendingFormData: FormData }
+  | { phase: 'invalid' };
 
 export function AddApartmentCard() {
   const router = useRouter();
@@ -35,6 +36,8 @@ export function AddApartmentCard() {
 
         if (result.status === 'duplicate') {
           setState({ phase: 'duplicate', existingApartmentId: result.existingApartmentId, pendingFormData: formData });
+        } else if (result.status === 'invalid') {
+          setState({ phase: 'invalid' });
         } else {
           router.push(`/apartments/${result.apartmentId}`);
         }
@@ -92,6 +95,18 @@ export function AddApartmentCard() {
         <button type="button" onClick={handleCreateAnyway} className="text-sm text-gray-600 underline">
           Create anyway
         </button>
+        <button type="button" onClick={() => setState({ phase: 'idle' })} className="text-sm text-gray-400">
+          Cancel
+        </button>
+      </div>
+    );
+  }
+
+  if (state.phase === 'invalid') {
+    return (
+      <div className={`${baseClass} border-gray-300 gap-2`}>
+        <p className="font-medium">Couldn&apos;t recognize that as a listing URL or saved page.</p>
+        <p className="text-sm text-gray-500">Check the link, or try a different file.</p>
         <button type="button" onClick={() => setState({ phase: 'idle' })} className="text-sm text-gray-400">
           Cancel
         </button>
