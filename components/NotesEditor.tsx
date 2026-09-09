@@ -27,7 +27,7 @@ export function NotesEditor({ apartmentId, initialNotes }: { apartmentId: string
       onChange={(event) => handleChange(event.target.value)}
       placeholder="Notes"
       rows={8}
-      className="block w-full border rounded px-2 py-1"
+      className="glass-input block w-full"
     />
   );
 }

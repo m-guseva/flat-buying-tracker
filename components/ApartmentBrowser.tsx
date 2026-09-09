@@ -45,46 +45,54 @@ export function ApartmentBrowser({ apartments }: { apartments: ApartmentWithRela
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap items-center gap-3">
+      <div className="glass-panel flex flex-wrap items-center gap-3 p-3">
         <input
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search"
-          className="border rounded px-3 py-1.5 text-sm flex-1 min-w-[160px]"
+          className="glass-input flex-1 min-w-[160px]"
         />
-        <div className="flex border rounded overflow-hidden text-sm">
+        <div className="flex rounded-lg overflow-hidden border border-white/70 text-sm">
           <button
             type="button"
             onClick={() => setViewMode('card')}
-            className={`px-3 py-1.5 ${viewMode === 'card' ? 'bg-black text-white' : 'bg-white'}`}
+            className={`px-3 py-1.5 transition-colors ${viewMode === 'card' ? 'bg-indigo-600 text-white' : 'bg-white/60 hover:bg-white/90'}`}
           >
             Cards
           </button>
           <button
             type="button"
             onClick={() => setViewMode('table')}
-            className={`px-3 py-1.5 ${viewMode === 'table' ? 'bg-black text-white' : 'bg-white'}`}
+            className={`px-3 py-1.5 transition-colors ${viewMode === 'table' ? 'bg-indigo-600 text-white' : 'bg-white/60 hover:bg-white/90'}`}
           >
             Table
           </button>
         </div>
-        <button type="button" onClick={() => togglePanel('filter')} className="border rounded px-3 py-1.5 text-sm">
+        <button
+          type="button"
+          onClick={() => togglePanel('filter')}
+          className={openPanel === 'filter' ? 'btn-secondary-active' : 'btn-secondary'}
+        >
           Filter{filters.length > 0 ? ` (${filters.length})` : ''}
         </button>
-        <button type="button" onClick={() => togglePanel('sort')} className="border rounded px-3 py-1.5 text-sm">
+        <button
+          type="button"
+          onClick={() => togglePanel('sort')}
+          className={openPanel === 'sort' ? 'btn-secondary-active' : 'btn-secondary'}
+        >
           Sort{sortCriteria.length > 0 ? ` (${sortCriteria.length})` : ''}
         </button>
         {viewMode === 'table' && (
           <>
-            <button type="button" onClick={() => togglePanel('columns')} className="border rounded px-3 py-1.5 text-sm">
-              Columns
-            </button>
             <button
               type="button"
-              onClick={() => setShowAddCard((shown) => !shown)}
-              className="border rounded px-3 py-1.5 text-sm"
+              onClick={() => togglePanel('columns')}
+              className={openPanel === 'columns' ? 'btn-secondary-active' : 'btn-secondary'}
             >
+              Columns
+            </button>
+            <button type="button" onClick={() => setShowAddCard((shown) => !shown)} className="btn-secondary">
               + Add apartment
             </button>
           </>
@@ -98,9 +106,12 @@ export function ApartmentBrowser({ apartments }: { apartments: ApartmentWithRela
       {filters.length > 0 && (
         <div className="flex flex-wrap gap-2">
           {filters.map((filter) => (
-            <span key={filter.id} className="text-xs bg-gray-100 rounded-full px-3 py-1 flex items-center gap-1">
+            <span
+              key={filter.id}
+              className="text-xs bg-white/70 backdrop-blur-sm border border-white/60 rounded-full px-3 py-1 flex items-center gap-1 shadow-sm"
+            >
               {getField(filter.field)?.label ?? filter.field} {filter.operator} {filter.value}
-              <button type="button" onClick={() => removeFilter(filter.id)} className="text-gray-500">
+              <button type="button" onClick={() => removeFilter(filter.id)} className="text-gray-500 hover:text-red-600">
                 ×
               </button>
             </span>

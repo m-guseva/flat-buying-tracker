@@ -62,7 +62,7 @@ export function FilterBuilder({
   }
 
   return (
-    <div className="border rounded p-3 space-y-2">
+    <div className="glass-panel p-3 space-y-2">
       {conditions.map((condition) => {
         const field = getField(condition.field) ?? FILTERABLE_FIELDS[0];
         return (
@@ -70,7 +70,7 @@ export function FilterBuilder({
             <select
               value={condition.field}
               onChange={(e) => changeField(condition.id, e.target.value)}
-              className="border rounded px-2 py-1"
+              className="glass-input"
             >
               {FILTERABLE_FIELDS.map((f) => (
                 <option key={f.key} value={f.key}>
@@ -81,7 +81,7 @@ export function FilterBuilder({
             <select
               value={condition.operator}
               onChange={(e) => updateCondition(condition.id, { operator: e.target.value as FilterOperator })}
-              className="border rounded px-2 py-1"
+              className="glass-input"
             >
               {OPERATORS_BY_TYPE[field.type].map((op) => (
                 <option key={op.value} value={op.value}>
@@ -93,7 +93,7 @@ export function FilterBuilder({
               <select
                 value={condition.value}
                 onChange={(e) => updateCondition(condition.id, { value: e.target.value })}
-                className="border rounded px-2 py-1"
+                className="glass-input"
               >
                 <option value="true">Yes</option>
                 <option value="false">No</option>
@@ -102,7 +102,7 @@ export function FilterBuilder({
               <select
                 value={condition.value}
                 onChange={(e) => updateCondition(condition.id, { value: e.target.value })}
-                className="border rounded px-2 py-1"
+                className="glass-input"
               >
                 {field.options?.map((option) => (
                   <option key={option.value} value={option.value}>
@@ -115,21 +115,21 @@ export function FilterBuilder({
                 type={field.type === 'number' ? 'number' : 'text'}
                 value={condition.value}
                 onChange={(e) => updateCondition(condition.id, { value: e.target.value })}
-                className="border rounded px-2 py-1 w-28"
+                className="glass-input w-28"
               />
             )}
-            <button type="button" onClick={() => removeCondition(condition.id)} className="text-red-600 text-sm">
+            <button type="button" onClick={() => removeCondition(condition.id)} className="text-red-600 text-sm hover:text-red-700">
               Remove
             </button>
           </div>
         );
       })}
       <div className="flex gap-3">
-        <button type="button" onClick={addCondition} className="text-sm text-blue-600">
+        <button type="button" onClick={addCondition} className="text-sm text-indigo-600 hover:text-indigo-700">
           + Add filter
         </button>
         {conditions.length > 0 && (
-          <button type="button" onClick={() => onChange([])} className="text-sm text-gray-500">
+          <button type="button" onClick={() => onChange([])} className="text-sm text-gray-500 hover:text-gray-700">
             Clear filters
           </button>
         )}

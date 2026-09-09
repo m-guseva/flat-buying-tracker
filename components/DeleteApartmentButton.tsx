@@ -23,7 +23,7 @@ export function DeleteApartmentButton({ apartmentId }: { apartmentId: string }) 
       onClick={handleClick}
       disabled={isPending}
       aria-label="Delete apartment"
-      className="absolute top-2 right-2 z-10 bg-white/90 hover:bg-red-50 text-gray-500 hover:text-red-600 rounded-full w-7 h-7 flex items-center justify-center text-sm shadow"
+      className="absolute top-2 right-2 z-10 bg-white/80 backdrop-blur-sm hover:bg-red-50/90 text-gray-500 hover:text-red-600 rounded-full w-7 h-7 flex items-center justify-center text-sm shadow-md border border-white/60 transition-colors"
     >
       {isPending ? '…' : '🗑'}
     </button>

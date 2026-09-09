@@ -91,13 +91,14 @@ export function AddApartmentCard() {
     beginSubmit(state.pendingFormData);
   }
 
-  const baseClass = 'flex flex-col items-center justify-center gap-1 rounded-lg border-2 border-dashed aspect-[4/3] p-4 text-center';
+  const baseClass =
+    'flex flex-col items-center justify-center gap-1 rounded-2xl border-2 border-dashed backdrop-blur-md aspect-[4/3] p-4 text-center transition-colors';
 
   if (state.phase === 'duplicate') {
     return (
-      <div className={`${baseClass} border-gray-300 gap-2`}>
+      <div className={`${baseClass} border-white/70 bg-white/50 gap-2`}>
         <p className="font-medium">This listing may already exist.</p>
-        <Link href={`/apartments/${state.existingApartmentId}`} className="text-blue-600 text-sm">
+        <Link href={`/apartments/${state.existingApartmentId}`} className="text-indigo-600 text-sm">
           Open existing apartment
         </Link>
         <button type="button" onClick={handleCreateAnyway} className="text-sm text-gray-600 underline">
@@ -112,7 +113,7 @@ export function AddApartmentCard() {
 
   if (state.phase === 'invalid') {
     return (
-      <div className={`${baseClass} border-gray-300 gap-2`}>
+      <div className={`${baseClass} border-white/70 bg-white/50 gap-2`}>
         <p className="font-medium">Couldn&apos;t recognize that as a listing URL or saved page.</p>
         <p className="text-sm text-gray-500">Check the link, or try a different file.</p>
         <button type="button" onClick={() => setState({ phase: 'idle' })} className="text-sm text-gray-400">
@@ -124,7 +125,7 @@ export function AddApartmentCard() {
 
   if (state.phase === 'submitting') {
     return (
-      <div className={`${baseClass} border-gray-300 text-gray-500`}>
+      <div className={`${baseClass} border-white/70 bg-white/50 text-gray-500`}>
         <span className="text-sm">{PROGRESS_MESSAGES[progressIndex]}</span>
       </div>
     );
@@ -140,11 +141,11 @@ export function AddApartmentCard() {
       onDrop={handleDrop}
       className={
         isDragging
-          ? `${baseClass} border-blue-400 bg-blue-50 text-gray-500`
-          : `${baseClass} border-gray-300 text-gray-500 hover:border-gray-400`
+          ? `${baseClass} border-indigo-400 bg-indigo-50/60 text-gray-500`
+          : `${baseClass} border-white/70 bg-white/40 text-gray-500 hover:border-indigo-300 hover:bg-white/60`
       }
     >
-      <span className="text-3xl">+</span>
+      <span className="text-3xl text-indigo-500">+</span>
       <span className="font-medium">Add apartment</span>
       <form onSubmit={handleSubmit} className="w-full">
         <input
@@ -152,7 +153,7 @@ export function AddApartmentCard() {
           value={urlValue}
           onChange={(event) => setUrlValue(event.target.value)}
           placeholder="Paste a link, or drop/choose a saved page"
-          className="w-full border rounded px-2 py-1 text-sm text-center"
+          className="glass-input w-full text-center"
         />
       </form>
       <input type="file" accept=".html,.htm" onChange={handleFileChange} className="text-xs" />
@@ -161,7 +162,7 @@ export function AddApartmentCard() {
           matches the [id] segment just like a real apartment id would,
           which 404s looking up an apartment that doesn't exist. A full
           navigation bypasses interception and hits the real page. */}
-      <a href="/apartments/new" className="text-blue-600 text-sm">
+      <a href="/apartments/new" className="text-indigo-600 text-sm">
         or create manually
       </a>
     </div>

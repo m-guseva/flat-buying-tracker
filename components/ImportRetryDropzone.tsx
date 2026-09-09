@@ -37,8 +37,8 @@ export function ImportRetryDropzone({ apartmentId }: { apartmentId: string }) {
       onDrop={handleDrop}
       className={
         isDragging
-          ? 'border-2 border-dashed border-blue-400 bg-blue-50 rounded-md p-4 text-center space-y-2'
-          : 'border-2 border-dashed border-amber-300 bg-amber-50 rounded-md p-4 text-center space-y-2'
+          ? 'border-2 border-dashed border-indigo-400 bg-indigo-50/60 backdrop-blur-sm rounded-xl p-4 text-center space-y-2'
+          : 'border-2 border-dashed border-amber-300 bg-amber-50/70 backdrop-blur-sm rounded-xl p-4 text-center space-y-2'
       }
     >
       <p className="text-sm text-gray-700">

@@ -38,8 +38,8 @@ export function DocumentDropzone({ apartmentId }: { apartmentId: string }) {
       onDrop={handleDrop}
       className={
         isDragging
-          ? 'border-2 border-dashed border-blue-400 bg-blue-50 rounded-md p-6 text-center space-y-2'
-          : 'border-2 border-dashed border-gray-300 rounded-md p-6 text-center space-y-2'
+          ? 'border-2 border-dashed border-indigo-400 bg-indigo-50/60 backdrop-blur-sm rounded-xl p-6 text-center space-y-2'
+          : 'border-2 border-dashed border-white/70 bg-white/40 backdrop-blur-sm rounded-xl p-6 text-center space-y-2'
       }
     >
       <p className="text-sm text-gray-500">{isPending ? 'Uploading…' : '+ Drop files here'}</p>

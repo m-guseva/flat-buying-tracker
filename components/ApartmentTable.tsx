@@ -46,10 +46,10 @@ export function ApartmentTable({
   }
 
   return (
-    <div className="overflow-x-auto">
+    <div className="glass-panel overflow-x-auto p-1">
       <table className="w-full text-sm border-collapse">
         <thead>
-          <tr className="border-b text-left">
+          <tr className="text-left border-b border-white/70 bg-white/40 backdrop-blur-sm">
             {orderedColumns.map((key) => {
               const field = getField(key);
               const isSorted = primarySort?.field === key;
@@ -57,9 +57,9 @@ export function ApartmentTable({
                 <th
                   key={key}
                   onClick={() => handleHeaderClick(key)}
-                  className={`py-1.5 px-2 font-medium ${
-                    field?.sortable ? 'cursor-pointer select-none hover:text-black' : ''
-                  } ${isSorted ? 'text-black' : 'text-gray-600'}`}
+                  className={`py-2 px-3 font-medium first:rounded-tl-xl last:rounded-tr-xl ${
+                    field?.sortable ? 'cursor-pointer select-none hover:text-indigo-700' : ''
+                  } ${isSorted ? 'text-indigo-700' : 'text-gray-600'}`}
                 >
                   {field?.label ?? key}
                   {isSorted && <span className="ml-1">{primarySort.direction === 'asc' ? '▲' : '▼'}</span>}
@@ -73,10 +73,10 @@ export function ApartmentTable({
             <tr
               key={apartment.id}
               onClick={() => router.push(`/apartments/${apartment.id}`)}
-              className="border-b hover:bg-gray-50 cursor-pointer"
+              className="border-b border-white/50 hover:bg-white/60 cursor-pointer transition-colors"
             >
               {orderedColumns.map((key) => (
-                <td key={key} className="py-1.5 px-2">
+                <td key={key} className="py-2 px-3">
                   {formatCell(apartment, key)}
                 </td>
               ))}
