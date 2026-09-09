@@ -10,6 +10,8 @@ import {
   type MaklervertragStatus,
 } from '@/lib/db/apartments';
 import { parseManualApartmentForm, parseApartmentPropertiesForm } from '@/lib/apartments/formData';
+import { addApartmentFromInput, type AddApartmentResult } from '@/lib/ingestion/addApartment';
+import { retryImportFromHtml } from '@/lib/ingestion/retryImport';
 
 export async function createManualApartmentAction(formData: FormData) {
   const apartment = await createApartment(parseManualApartmentForm(formData));
@@ -40,4 +42,27 @@ export async function updateApartmentMaklervertragAction(id: string, formData: F
 export async function updateApartmentNotesAction(id: string, notes: string) {
   await updateApartment(id, { notes });
   revalidatePath(`/apartments/${id}`);
+}
+
+export async function addApartmentAction(formData: FormData): Promise<AddApartmentResult> {
+  const url = formData.get('url')?.toString() || undefined;
+  const file = formData.get('file');
+  const force = formData.get('force') === 'true';
+  const html = file instanceof File ? await file.text() : undefined;
+
+  const result = await addApartmentFromInput({ url, html, force });
+  if (result.status === 'created') {
+    revalidatePath('/');
+  }
+  return result;
+}
+
+export async function retryImportFromHtmlAction(apartmentId: string, formData: FormData) {
+  const file = formData.get('file');
+  if (!(file instanceof File)) {
+    throw new Error('No file provided');
+  }
+  const html = await file.text();
+  await retryImportFromHtml(apartmentId, html);
+  revalidatePath(`/apartments/${apartmentId}`);
 }
