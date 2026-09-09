@@ -68,4 +68,19 @@ describe('retryImportFromHtml', () => {
 
     expect(downloadAndStoreImagesMock).not.toHaveBeenCalled();
   });
+
+  it('refuses the backfill when the uploaded file is a different listing than the apartment', async () => {
+    const apartment = await createApartment({
+      source: 'IMMOSCOUT24',
+      sourceUrl: 'https://www.immobilienscout24.de/expose/999999999',
+    });
+    createdIds.push(apartment.id);
+
+    await retryImportFromHtml(apartment.id, immoscout24Html);
+
+    const updated = await prisma.apartment.findUniqueOrThrow({ where: { id: apartment.id } });
+    expect(updated.title).toBeNull();
+    expect(updated.price).toBeNull();
+    expect(downloadAndStoreImagesMock).not.toHaveBeenCalled();
+  });
 });

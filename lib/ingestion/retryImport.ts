@@ -1,4 +1,5 @@
 import { getApartment, updateApartment, type UpdateApartmentInput } from '@/lib/db/apartments';
+import { normalizeUrl } from './normalizeUrl';
 import { recoverSourceUrl } from './recoverSourceUrl';
 import { pickScraper } from './registry';
 import { downloadAndStoreImages } from './downloadAndStoreImages';
@@ -7,12 +8,29 @@ import type { ScrapedApartment } from './types';
 type ApartmentWithRelations = NonNullable<Awaited<ReturnType<typeof getApartment>>>;
 
 export async function retryImportFromHtml(apartmentId: string, html: string): Promise<void> {
-  const sourceUrl = recoverSourceUrl(html);
-  const scraper = sourceUrl ? pickScraper(sourceUrl) : null;
-  if (!scraper || !sourceUrl) return;
-
   const apartment = await getApartment(apartmentId);
   if (!apartment) return;
+
+  const recoveredUrl = recoverSourceUrl(html);
+
+  // Refuse the backfill if the uploaded file's own canonical URL doesn't match
+  // the listing this apartment was created from — otherwise a saved page for a
+  // different listing would silently overwrite this apartment's data.
+  if (recoveredUrl && apartment.sourceUrl) {
+    let normalizedRecoveredUrl: string | null;
+    try {
+      normalizedRecoveredUrl = normalizeUrl(recoveredUrl);
+    } catch {
+      normalizedRecoveredUrl = null;
+    }
+    if (normalizedRecoveredUrl !== apartment.sourceUrl) {
+      return;
+    }
+  }
+
+  const sourceUrl = recoveredUrl ?? apartment.sourceUrl ?? undefined;
+  const scraper = sourceUrl ? pickScraper(sourceUrl) : null;
+  if (!scraper || !sourceUrl) return;
 
   const scraped = scraper.parse(html, sourceUrl);
   const fillable = fillableFieldsFrom(apartment, scraped);
