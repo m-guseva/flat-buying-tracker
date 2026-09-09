@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useTransition, type DragEvent, type FormEvent } from 'react';
+import { useState, useRef, useTransition, type ChangeEvent, type DragEvent, type FormEvent } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { addApartmentAction } from '@/app/actions/apartments';
@@ -77,6 +77,14 @@ export function AddApartmentCard() {
     }
   }
 
+  function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    const formData = new FormData();
+    formData.set('file', file);
+    beginSubmit(formData);
+  }
+
   function handleCreateAnyway() {
     if (state.phase !== 'duplicate') return;
     state.pendingFormData.set('force', 'true');
@@ -143,10 +151,14 @@ export function AddApartmentCard() {
           type="text"
           value={urlValue}
           onChange={(event) => setUrlValue(event.target.value)}
-          placeholder="Paste or drop a link"
+          placeholder="Paste a link, or drop/choose a saved page"
           className="w-full border rounded px-2 py-1 text-sm text-center"
         />
       </form>
+      <input type="file" accept=".html,.htm" onChange={handleFileChange} className="text-xs" />
+      <Link href="/apartments/new" className="text-blue-600 text-sm">
+        or create manually
+      </Link>
     </div>
   );
 }
