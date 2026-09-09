@@ -156,9 +156,14 @@ export function AddApartmentCard() {
         />
       </form>
       <input type="file" accept=".html,.htm" onChange={handleFileChange} className="text-xs" />
-      <Link href="/apartments/new" className="text-blue-600 text-sm">
+      {/* Plain <a>, not <Link>: a client-side soft navigation here gets
+          incorrectly intercepted by app/@modal/(.)apartments/[id] — "new"
+          matches the [id] segment just like a real apartment id would,
+          which 404s looking up an apartment that doesn't exist. A full
+          navigation bypasses interception and hits the real page. */}
+      <a href="/apartments/new" className="text-blue-600 text-sm">
         or create manually
-      </Link>
+      </a>
     </div>
   );
 }
