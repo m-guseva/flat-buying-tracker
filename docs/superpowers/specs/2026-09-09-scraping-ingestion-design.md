@@ -172,7 +172,23 @@ URLs, scoped to the real listing gallery container so unrelated images
 never leak in — both sites render "other listings" thumbnails
 (recommendations, or the agent's other listings) elsewhere on the same
 page with URLs from the same CDN, so scoping by container, not by domain,
-is required:
+is required.
+
+Within that scoped container, each `<img>`'s `src` is either already an
+absolute CDN URL (the expected shape for a live fetch) or a local relative
+path rewritten by the browser's save process (the saved-file case, e.g.
+`..._files/13922db7-711e-...-2052742405_yatW.jpg`). For the latter, the
+image's UUID is still present in the local filename; a shared helper
+(`lib/ingestion/extractGalleryImages.ts`) recovers the real absolute URL
+by regex-searching the full raw HTML text for that UUID appearing inside
+an absolute URL on the site's known CDN host, since the two sites differ
+in whether that reconstruction can be done from the UUID alone: IS24's
+CDN path is deterministic from the UUID (multiple resize variants exist
+per image; the helper prefers one matching `1106x830` for a full-size
+image), while Immowelt's `mms.immowelt.de` URLs carry a `ci_seal` signed
+query parameter that cannot be reconstructed and must be recovered
+verbatim from the page (confirmed 1:1 — every image UUID matched exactly
+one signed URL on the sample listing).
 
 - ImmoScout24: images within `#is24-gallery-entry-point` only (excludes
   `#similarObjects`, the agent's-other-listings section).
@@ -240,10 +256,9 @@ of those classnames:
 |---|---|
 | title | ld+json `name` — often an auto-generated summary string, not a human-written title, on listings without a custom headline (confirmed on the sample) |
 | address | `[data-testid="cdp-location-address"]` text — **district + postal code only**, no street address in the static page (appears intentionally withheld pre-contact); user fills in the street manually |
-| price, hausgeld | `[data-testid="cdp-price"]` — find the row whose label text is "Kaufpreis" / "Hausgeld", read the adjacent value |
-| rooms, living area, floor | `[data-testid="cdp-hardfacts-keyfacts"]` — three sibling `<span>`s (e.g. "2 Zimmer", "46,3 m²", "3. Geschoss"), parsed by pattern, not by a stable per-field hook |
-| balcony, elevator, kitchen, condition | `[data-testid="cdp-features"]` — a plain `<li>` list with no per-feature hook; match each item's text against known German keywords (Balkon, Aufzug/Fahrstuhl, Einbauküche, Erstbezug/saniert/renoviert/Neubau, …) |
-| maklerprovision | not confirmed on the sample listing; implement as best-effort, gracefully null if not found |
+| price, hausgeld, maklerprovision | `[data-testid="cdp-price"]` — Emotion classnames make row-structure matching brittle, so match on the container's full text instead: regex `Kaufpreis\s+(\d+)\s*€` for price, `Hausgeld\s+(\d+)\s*€` for hausgeld. The same text also repeats "Provision für Käufer" inside a later cost-breakdown section with a different format — take only the text before "Geschätzte Gesamtkosten" when matching `Provision für Käufer\s+([\d,]+\s*%[^\n]*)` for maklerprovision, confirmed present on the sample listing ("3,57 % inkl. MwSt.") |
+| rooms, living area, floor | `[data-testid="cdp-hardfacts-keyfacts"]` — three sibling `<span>`s (e.g. "2 Zimmer", "•46,3 m²", "•3. Geschoss" — note the leading bullet on the 2nd/3rd), parsed by pattern: `(\d+)\s*Zimmer`, `([\d,]+)\s*m²`, and the floor span's text with the leading "•" stripped |
+| balcony, elevator, kitchen, condition | `[data-testid="cdp-features"]` — a plain `<li>` list with no per-feature hook; match each item's text against known German keywords (Balkon → balcony, Personenaufzug/Aufzug/Fahrstuhl → elevator, Einbauküche → kitchen; no condition-indicating keyword found on the sample listing, left null) |
 | images | `img` within `[data-testid="cdp-medias-overview"]`, full gallery (§4) |
 
 ## 7. Testing
