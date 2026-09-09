@@ -73,6 +73,22 @@ describe('matchesFilter', () => {
     const apartment = makeApartment();
     expect(matchesFilter(apartment, { id: '1', field: 'nonexistentField', operator: 'eq', value: 'anything' })).toBe(true);
   });
+
+  it('treats an unconfigured (empty value) text condition as inactive, matching regardless of field value — including null', () => {
+    const withAddress = makeApartment({ address: 'Müllerstraße 42' });
+    const withNullAddress = makeApartment({ address: null });
+    expect(matchesFilter(withAddress, { id: '1', field: 'address', operator: 'contains', value: '' })).toBe(true);
+    expect(matchesFilter(withNullAddress, { id: '1', field: 'address', operator: 'contains', value: '' })).toBe(true);
+    expect(matchesFilter(withNullAddress, { id: '1', field: 'address', operator: 'contains', value: '   ' })).toBe(true);
+  });
+
+  it('treats an unconfigured (empty value) number condition as inactive, not as a match on 0', () => {
+    const apartment = makeApartment({ price: 425000 });
+    const zeroPriceApartment = makeApartment({ price: 0 });
+    expect(matchesFilter(apartment, { id: '1', field: 'price', operator: 'eq', value: '' })).toBe(true);
+    // Confirms this isn't accidentally passing because Number('') happens to equal the apartment's price.
+    expect(matchesFilter(zeroPriceApartment, { id: '1', field: 'price', operator: 'eq', value: '' })).toBe(true);
+  });
 });
 
 describe('matchesAllFilters', () => {

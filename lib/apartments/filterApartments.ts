@@ -13,6 +13,7 @@ export interface FilterCondition {
 export function matchesFilter(apartment: Apartment, condition: FilterCondition): boolean {
   const field = getField(condition.field);
   if (!field) return true;
+  if (condition.value.trim() === '') return true;
   const rawValue = getFieldValue(apartment, condition.field);
 
   if (field.type === 'text') {
