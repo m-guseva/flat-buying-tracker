@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import type { Apartment } from '@prisma/client';
 import { getField, TABLE_COLUMN_FIELDS } from '@/lib/apartments/fields';
 import { formatPrice, STATUS_LABELS, MAKLERVERTRAG_LABELS } from '@/lib/apartments/format';
+import type { SortCriterion } from '@/lib/apartments/sortApartments';
 
 function formatCell(apartment: Apartment, key: string): string {
   const field = getField(key);
@@ -19,20 +20,52 @@ function formatCell(apartment: Apartment, key: string): string {
   return String(value);
 }
 
-export function ApartmentTable({ apartments, columns }: { apartments: Apartment[]; columns: string[] }) {
+export function ApartmentTable({
+  apartments,
+  columns,
+  sortCriteria,
+  onSortChange,
+}: {
+  apartments: Apartment[];
+  columns: string[];
+  sortCriteria: SortCriterion[];
+  onSortChange: (criteria: SortCriterion[]) => void;
+}) {
   const router = useRouter();
   const orderedColumns = TABLE_COLUMN_FIELDS.filter((field) => columns.includes(field.key)).map((field) => field.key);
+  const primarySort = sortCriteria[0];
+
+  function handleHeaderClick(key: string) {
+    const field = getField(key);
+    if (!field?.sortable) return;
+    if (primarySort?.field === key) {
+      onSortChange([{ id: primarySort.id, field: key, direction: primarySort.direction === 'asc' ? 'desc' : 'asc' }]);
+    } else {
+      onSortChange([{ id: crypto.randomUUID(), field: key, direction: 'asc' }]);
+    }
+  }
 
   return (
     <div className="overflow-x-auto">
       <table className="w-full text-sm border-collapse">
         <thead>
           <tr className="border-b text-left">
-            {orderedColumns.map((key) => (
-              <th key={key} className="p-2 font-medium">
-                {getField(key)?.label ?? key}
-              </th>
-            ))}
+            {orderedColumns.map((key) => {
+              const field = getField(key);
+              const isSorted = primarySort?.field === key;
+              return (
+                <th
+                  key={key}
+                  onClick={() => handleHeaderClick(key)}
+                  className={`py-1.5 px-2 font-medium ${
+                    field?.sortable ? 'cursor-pointer select-none hover:text-black' : ''
+                  } ${isSorted ? 'text-black' : 'text-gray-600'}`}
+                >
+                  {field?.label ?? key}
+                  {isSorted && <span className="ml-1">{primarySort.direction === 'asc' ? '▲' : '▼'}</span>}
+                </th>
+              );
+            })}
           </tr>
         </thead>
         <tbody>
@@ -43,7 +76,7 @@ export function ApartmentTable({ apartments, columns }: { apartments: Apartment[
               className="border-b hover:bg-gray-50 cursor-pointer"
             >
               {orderedColumns.map((key) => (
-                <td key={key} className="p-2">
+                <td key={key} className="py-1.5 px-2">
                   {formatCell(apartment, key)}
                 </td>
               ))}

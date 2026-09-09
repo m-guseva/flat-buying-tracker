@@ -122,7 +122,12 @@ export function ApartmentBrowser({ apartments }: { apartments: ApartmentWithRela
           ))}
         </div>
       ) : (
-        <ApartmentTable apartments={visibleApartments} columns={columns} />
+        <ApartmentTable
+          apartments={visibleApartments}
+          columns={columns}
+          sortCriteria={sortCriteria}
+          onSortChange={setSortCriteria}
+        />
       )}
     </div>
   );

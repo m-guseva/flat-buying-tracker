@@ -1,14 +1,15 @@
 import { notFound } from 'next/navigation';
 import { getApartment } from '@/lib/db/apartments';
+import { Modal } from '@/components/Modal';
 import { ApartmentDetailContent } from '@/components/ApartmentDetailContent';
 
-export default async function ApartmentDetailPage({ params }: { params: { id: string } }) {
+export default async function ApartmentModal({ params }: { params: { id: string } }) {
   const apartment = await getApartment(params.id);
   if (!apartment) notFound();
 
   return (
-    <main className="max-w-2xl mx-auto p-6">
-      <ApartmentDetailContent apartment={apartment} isModal={false} />
-    </main>
+    <Modal>
+      <ApartmentDetailContent apartment={apartment} isModal />
+    </Modal>
   );
 }

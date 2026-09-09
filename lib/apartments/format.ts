@@ -28,3 +28,10 @@ export const MAKLERVERTRAG_LABELS: Record<string, string> = {
   SIGNED: 'Signed',
   WIDERRUF: 'Widerruf',
 };
+
+export const SOURCE_LABELS: Record<string, string> = {
+  IMMOSCOUT24: 'ImmoScout24',
+  IMMOWELT: 'Immowelt',
+  MANUAL: 'Manual entry',
+  OTHER: 'Other',
+};
