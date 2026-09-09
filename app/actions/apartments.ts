@@ -65,4 +65,5 @@ export async function retryImportFromHtmlAction(apartmentId: string, formData: F
   const html = await file.text();
   await retryImportFromHtml(apartmentId, html);
   revalidatePath(`/apartments/${apartmentId}`);
+  revalidatePath('/');
 }
