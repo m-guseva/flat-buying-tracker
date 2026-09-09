@@ -93,7 +93,7 @@ export function ApartmentBrowser({ apartments }: { apartments: ApartmentWithRela
 
       {openPanel === 'filter' && <FilterBuilder conditions={filters} onChange={setFilters} />}
       {openPanel === 'sort' && <SortBuilder criteria={sortCriteria} onChange={setSortCriteria} />}
-      {openPanel === 'columns' && <ColumnPicker selected={columns} onChange={setColumns} />}
+      {viewMode === 'table' && openPanel === 'columns' && <ColumnPicker selected={columns} onChange={setColumns} />}
 
       {filters.length > 0 && (
         <div className="flex flex-wrap gap-2">
