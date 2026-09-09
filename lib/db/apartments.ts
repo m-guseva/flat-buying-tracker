@@ -13,7 +13,7 @@ export type MaklervertragStatus = 'NOT_RECEIVED' | 'RECEIVED' | 'SIGNED' | 'WIDE
 
 export type CreateApartmentInput = {
   title?: string;
-  source: 'IMMOSCOUT24' | 'IMMOWELT' | 'MANUAL';
+  source: 'IMMOSCOUT24' | 'IMMOWELT' | 'MANUAL' | 'OTHER';
   sourceUrl?: string;
   address?: string;
   price?: number;

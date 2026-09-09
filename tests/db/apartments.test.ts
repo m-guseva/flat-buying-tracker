@@ -82,4 +82,17 @@ describe('apartment repository', () => {
     const fetched = await getApartment(apartment.id);
     expect(fetched).toBeNull();
   });
+
+  it('creates and finds an apartment with source OTHER', async () => {
+    const apartment = await createApartment({
+      source: 'OTHER',
+      sourceUrl: 'https://www.example.com/listing/42',
+    });
+    createdIds.push(apartment.id);
+
+    expect(apartment.source).toBe('OTHER');
+
+    const found = await findApartmentBySourceUrl('https://www.example.com/listing/42');
+    expect(found?.id).toBe(apartment.id);
+  });
 });
