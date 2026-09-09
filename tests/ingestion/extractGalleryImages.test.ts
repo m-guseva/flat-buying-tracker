@@ -7,6 +7,11 @@ describe('extractGalleryImages', () => {
     expect(extractGalleryImages('', [url], 'pictures.immobilienscout24.de')).toEqual([url]);
   });
 
+  it('drops an already-absolute src whose host does not match cdnHost', () => {
+    const url = 'https://evil.example.com/steal-this.jpg';
+    expect(extractGalleryImages('', [url], 'pictures.immobilienscout24.de')).toEqual([]);
+  });
+
   it('resolves a relative local src by finding its UUID inside an absolute CDN URL elsewhere in the page', () => {
     const guid = 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee';
     const html = `<script>{"url":"https://pictures.immobilienscout24.de/listings/${guid}.jpg/ORIG/resize/1106x830%3E/format/jpg/quality/80"}</script>`;

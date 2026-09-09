@@ -6,7 +6,13 @@ export function extractGalleryImages(html: string, imgSrcs: string[], cdnHost: s
 
   for (const src of imgSrcs) {
     if (/^https?:\/\//.test(src)) {
-      urls.push(src);
+      try {
+        if (new URL(src).hostname === cdnHost) {
+          urls.push(src);
+        }
+      } catch {
+        // unparseable "absolute-looking" string — skip it rather than throwing
+      }
       continue;
     }
 

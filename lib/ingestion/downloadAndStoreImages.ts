@@ -4,7 +4,7 @@ export async function downloadAndStoreImages(apartmentId: string, imageUrls: str
   let order = 0;
   for (const url of imageUrls) {
     try {
-      const response = await fetch(url);
+      const response = await fetch(url, { signal: AbortSignal.timeout(15000) });
       if (!response.ok) continue;
       const buffer = Buffer.from(await response.arrayBuffer());
       await createImage(apartmentId, buffer, `photo-${order + 1}.jpg`, order);
