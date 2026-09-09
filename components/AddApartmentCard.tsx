@@ -29,13 +29,19 @@ export function AddApartmentCard() {
     }, 1000);
 
     startTransition(async () => {
-      const result = await addApartmentAction(formData);
-      if (timerRef.current) clearInterval(timerRef.current);
+      try {
+        const result = await addApartmentAction(formData);
+        if (timerRef.current) clearInterval(timerRef.current);
 
-      if (result.status === 'duplicate') {
-        setState({ phase: 'duplicate', existingApartmentId: result.existingApartmentId, pendingFormData: formData });
-      } else {
-        router.push(`/apartments/${result.apartmentId}`);
+        if (result.status === 'duplicate') {
+          setState({ phase: 'duplicate', existingApartmentId: result.existingApartmentId, pendingFormData: formData });
+        } else {
+          router.push(`/apartments/${result.apartmentId}`);
+        }
+      } catch (error) {
+        if (timerRef.current) clearInterval(timerRef.current);
+        console.error('Failed to add apartment:', error);
+        setState({ phase: 'idle' });
       }
     });
   }
