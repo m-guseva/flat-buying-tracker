@@ -59,7 +59,10 @@ export async function getApartment(id: string) {
 
 export async function listApartments() {
   return prisma.apartment.findMany({
-    include: { images: { orderBy: { order: 'asc' } } },
+    include: {
+      images: { orderBy: { order: 'asc' } },
+      documents: true,
+    },
     orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
   });
 }

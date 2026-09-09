@@ -95,4 +95,22 @@ describe('apartment repository', () => {
     const found = await findApartmentBySourceUrl('https://www.example.com/listing/42');
     expect(found?.id).toBe(apartment.id);
   });
+
+  it("includes each apartment's documents in the listing", async () => {
+    const apartment = await createApartment({ source: 'MANUAL', title: 'With a doc' });
+    createdIds.push(apartment.id);
+    await prisma.document.create({
+      data: {
+        apartmentId: apartment.id,
+        filename: 'Expose.pdf',
+        fileType: 'application/pdf',
+        filePath: `${apartment.id}/expose.pdf`,
+      },
+    });
+
+    const list = await listApartments();
+    const listed = list.find((a) => a.id === apartment.id);
+    expect(listed?.documents).toHaveLength(1);
+    expect(listed?.documents[0].filename).toBe('Expose.pdf');
+  });
 });
