@@ -2,6 +2,7 @@ import Link from 'next/link';
 import type { Apartment, Image as ApartmentImage } from '@prisma/client';
 import { formatPrice, formatAreaAndRooms, STATUS_LABELS } from '@/lib/apartments/format';
 import { ImageCarousel } from '@/components/ImageCarousel';
+import { DeleteApartmentButton } from '@/components/DeleteApartmentButton';
 
 type ApartmentCardProps = {
   apartment: Apartment & { images: ApartmentImage[] };
@@ -14,8 +15,9 @@ export function ApartmentCard({ apartment }: ApartmentCardProps) {
   return (
     <Link
       href={`/apartments/${apartment.id}`}
-      className="block rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-shadow"
+      className="relative block rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-shadow"
     >
+      <DeleteApartmentButton apartmentId={apartment.id} />
       <div className="aspect-[4/3] bg-gray-100">
         <ImageCarousel images={apartment.images} alt={apartment.title ?? 'Apartment'} />
       </div>

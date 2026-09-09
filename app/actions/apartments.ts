@@ -6,6 +6,7 @@ import {
   createApartment,
   updateApartment,
   updateApartmentStatus,
+  deleteApartment,
   type Status,
   type MaklervertragStatus,
 } from '@/lib/db/apartments';
@@ -42,6 +43,11 @@ export async function updateApartmentMaklervertragAction(id: string, formData: F
 export async function updateApartmentNotesAction(id: string, notes: string) {
   await updateApartment(id, { notes });
   revalidatePath(`/apartments/${id}`);
+}
+
+export async function deleteApartmentAction(id: string) {
+  await deleteApartment(id);
+  revalidatePath('/');
 }
 
 export async function addApartmentAction(formData: FormData): Promise<AddApartmentResult> {

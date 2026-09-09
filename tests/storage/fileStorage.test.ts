@@ -42,4 +42,18 @@ describe('LocalFileStorage', () => {
 
     await expect(storage.read(reference)).rejects.toThrow();
   });
+
+  it('deletes every file for an apartment', async () => {
+    const ref1 = await storage.save(apartmentId, Buffer.from('one'), 'one.txt');
+    const ref2 = await storage.save(apartmentId, Buffer.from('two'), 'two.txt');
+
+    await storage.deleteAll(apartmentId);
+
+    await expect(storage.read(ref1)).rejects.toThrow();
+    await expect(storage.read(ref2)).rejects.toThrow();
+  });
+
+  it('does not throw deleting all files for an apartment that has none', async () => {
+    await expect(storage.deleteAll('apartment-with-no-files')).resolves.not.toThrow();
+  });
 });

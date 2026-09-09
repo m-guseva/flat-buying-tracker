@@ -1,4 +1,5 @@
 import { prisma } from './client';
+import { fileStorage } from '../storage/fileStorage';
 import type { Apartment } from '@prisma/client';
 
 export type Status =
@@ -80,7 +81,9 @@ export async function updateApartmentStatus(id: string, status: Status) {
 }
 
 export async function deleteApartment(id: string) {
-  return prisma.apartment.delete({ where: { id } });
+  const apartment = await prisma.apartment.delete({ where: { id } });
+  await fileStorage.deleteAll(id);
+  return apartment;
 }
 
 export async function findApartmentBySourceUrl(sourceUrl: string) {

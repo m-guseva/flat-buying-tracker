@@ -1,4 +1,4 @@
-import { mkdir, writeFile, unlink, stat } from 'fs/promises';
+import { mkdir, writeFile, unlink, stat, rm } from 'fs/promises';
 import { createReadStream } from 'fs';
 import path from 'path';
 import type { Readable } from 'stream';
@@ -9,6 +9,7 @@ export interface FileStorage {
   save(apartmentId: string, buffer: Buffer, filename: string): Promise<string>;
   read(reference: string): Promise<Readable>;
   delete(reference: string): Promise<void>;
+  deleteAll(apartmentId: string): Promise<void>;
 }
 
 function safeFilename(filename: string): string {
@@ -32,6 +33,10 @@ export class LocalFileStorage implements FileStorage {
 
   async delete(reference: string): Promise<void> {
     await unlink(path.join(STORAGE_ROOT, reference));
+  }
+
+  async deleteAll(apartmentId: string): Promise<void> {
+    await rm(path.join(STORAGE_ROOT, apartmentId), { recursive: true, force: true });
   }
 }
 

@@ -9,6 +9,8 @@ import {
   deleteApartment,
   findApartmentBySourceUrl,
 } from '@/lib/db/apartments';
+import { createImage } from '@/lib/db/images';
+import { fileStorage } from '@/lib/storage/fileStorage';
 
 const createdIds: string[] = [];
 
@@ -81,6 +83,15 @@ describe('apartment repository', () => {
 
     const fetched = await getApartment(apartment.id);
     expect(fetched).toBeNull();
+  });
+
+  it("deletes the apartment's stored files along with the apartment", async () => {
+    const apartment = await createApartment({ source: 'MANUAL', title: 'With a photo' });
+    const image = await createImage(apartment.id, Buffer.from('fake image bytes'), 'photo.jpg', 0);
+
+    await deleteApartment(apartment.id);
+
+    await expect(fileStorage.read(image.filePath)).rejects.toThrow();
   });
 
   it('creates and finds an apartment with source OTHER', async () => {
