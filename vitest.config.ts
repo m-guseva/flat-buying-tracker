@@ -18,5 +18,11 @@ export default defineConfig({
     // itself; without this, a nested worktree's copy of this same test
     // suite gets picked up too, double-counting every test.
     exclude: [...configDefaults.exclude, '**/.claude/**'],
+    // Real-DB integration tests across different files can collide on shared
+    // fixture data under Vitest's default per-file parallelism — e.g.
+    // tests/ingestion/addApartment.test.ts and tests/ingestion/retryImport.test.ts
+    // both create apartments using the same ImmoScout24 fixture's canonical
+    // sourceUrl, so running them concurrently races app-level duplicate detection.
+    fileParallelism: false,
   },
 });
