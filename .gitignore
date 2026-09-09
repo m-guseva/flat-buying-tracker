@@ -38,3 +38,6 @@ next-env.d.ts
 
 # local data
 /data
+
+# superpowers subagent-driven-development scratch workspace
+/.superpowers
