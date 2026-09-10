@@ -8,6 +8,7 @@ import { NotesEditor } from '@/components/NotesEditor';
 import { ImageCarousel } from '@/components/ImageCarousel';
 import { PasteImageZone } from '@/components/PasteImageZone';
 import { PropertiesForm } from '@/components/PropertiesForm';
+import { isReadOnly } from '@/lib/readOnly';
 
 type ApartmentWithRelations = Apartment & {
   images: ApartmentImage[];
@@ -24,11 +25,12 @@ export function ApartmentDetailContent({
   apartment: ApartmentWithRelations;
   isModal: boolean;
 }) {
+  const readOnly = isReadOnly();
   return (
     <div className="space-y-8">
       <div>
         <div className="aspect-[4/3] bg-white/40 rounded-2xl overflow-hidden border border-white/60 shadow-lg shadow-indigo-100/50">
-          <ImageCarousel apartmentId={apartment.id} images={apartment.images} alt={apartment.title ?? 'Apartment'} allowSetCover />
+          <ImageCarousel apartmentId={apartment.id} images={apartment.images} alt={apartment.title ?? 'Apartment'} allowSetCover={!readOnly} />
         </div>
         <PasteImageZone apartmentId={apartment.id} />
       </div>
@@ -48,19 +50,21 @@ export function ApartmentDetailContent({
         )}
       </div>
 
-      {apartment.source !== 'MANUAL' && !apartment.title && apartment.images.length === 0 && (
+      {apartment.source !== 'MANUAL' && !apartment.title && apartment.images.length === 0 && !readOnly && (
         <ImportRetryDropzone apartmentId={apartment.id} />
       )}
 
       <section className="glass-panel p-4 space-y-3">
         <h2 className="text-lg font-medium">Process / status</h2>
         <form action={updateApartmentStatusAction.bind(null, apartment.id)} className="flex gap-2">
-          <select name="status" defaultValue={apartment.status} className="glass-input">
-            {Object.entries(STATUS_LABELS).map(([value, label]) => (
-              <option key={value} value={value}>{label}</option>
-            ))}
-          </select>
-          <button type="submit" className="btn-secondary">Update status</button>
+          <fieldset disabled={readOnly} className="flex gap-2">
+            <select name="status" defaultValue={apartment.status} className="glass-input">
+              {Object.entries(STATUS_LABELS).map(([value, label]) => (
+                <option key={value} value={value}>{label}</option>
+              ))}
+            </select>
+            <button type="submit" className="btn-secondary">Update status</button>
+          </fieldset>
         </form>
 
         <h3 className="text-sm font-medium text-gray-500">Status history</h3>
@@ -76,12 +80,14 @@ export function ApartmentDetailContent({
       <section className="glass-panel p-4 space-y-3">
         <h2 className="text-lg font-medium">Maklervertrag</h2>
         <form action={updateApartmentMaklervertragAction.bind(null, apartment.id)} className="flex gap-2">
-          <select name="maklervertragStatus" defaultValue={apartment.maklervertragStatus} className="glass-input">
-            {Object.entries(MAKLERVERTRAG_LABELS).map(([value, label]) => (
-              <option key={value} value={value}>{label}</option>
-            ))}
-          </select>
-          <button type="submit" className="btn-secondary">Update</button>
+          <fieldset disabled={readOnly} className="flex gap-2">
+            <select name="maklervertragStatus" defaultValue={apartment.maklervertragStatus} className="glass-input">
+              {Object.entries(MAKLERVERTRAG_LABELS).map(([value, label]) => (
+                <option key={value} value={value}>{label}</option>
+              ))}
+            </select>
+            <button type="submit" className="btn-secondary">Update</button>
+          </fieldset>
         </form>
       </section>
 
@@ -103,13 +109,15 @@ export function ApartmentDetailContent({
               >
                 Download
               </a>
-              <form action={deleteDocumentAction.bind(null, apartment.id, document.id)}>
-                <button type="submit" className="text-red-600 hover:text-red-700">Delete</button>
-              </form>
+              {!readOnly && (
+                <form action={deleteDocumentAction.bind(null, apartment.id, document.id)}>
+                  <button type="submit" className="text-red-600 hover:text-red-700">Delete</button>
+                </form>
+              )}
             </li>
           ))}
         </ul>
-        <DocumentDropzone apartmentId={apartment.id} />
+        {!readOnly && <DocumentDropzone apartmentId={apartment.id} />}
       </section>
 
       <section className="glass-panel p-4 space-y-3">
@@ -117,9 +125,11 @@ export function ApartmentDetailContent({
         <NotesEditor apartmentId={apartment.id} initialNotes={apartment.notes ?? ''} />
       </section>
 
-      <button type="submit" form={PROPERTIES_FORM_ID} className="btn-primary w-full">
-        Save
-      </button>
+      {!readOnly && (
+        <button type="submit" form={PROPERTIES_FORM_ID} className="btn-primary w-full">
+          Save
+        </button>
+      )}
     </div>
   );
 }

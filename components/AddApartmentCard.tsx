@@ -4,6 +4,7 @@ import { useState, useRef, useTransition, type ChangeEvent, type DragEvent, type
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { addApartmentAction } from '@/app/actions/apartments';
+import { isReadOnly } from '@/lib/readOnly';
 
 const PROGRESS_MESSAGES = ['Fetching listing…', 'Extracting apartment information…', 'Loading images…'];
 
@@ -21,6 +22,8 @@ export function AddApartmentCard() {
   const [isDragging, setIsDragging] = useState(false);
   const [, startTransition] = useTransition();
   const timerRef = useRef<ReturnType<typeof setInterval>>();
+
+  if (isReadOnly()) return null;
 
   function beginSubmit(formData: FormData) {
     setState({ phase: 'submitting' });

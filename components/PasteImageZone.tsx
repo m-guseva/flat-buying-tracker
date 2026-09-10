@@ -2,12 +2,15 @@
 
 import { useEffect, useState, useTransition } from 'react';
 import { uploadImageAction } from '@/app/actions/images';
+import { isReadOnly } from '@/lib/readOnly';
 
 export function PasteImageZone({ apartmentId }: { apartmentId: string }) {
   const [isPending, startTransition] = useTransition();
   const [justAdded, setJustAdded] = useState(false);
+  const readOnly = isReadOnly();
 
   useEffect(() => {
+    if (readOnly) return;
     function handlePaste(event: ClipboardEvent) {
       const items = event.clipboardData?.items;
       if (!items) return;
@@ -29,8 +32,9 @@ export function PasteImageZone({ apartmentId }: { apartmentId: string }) {
 
     document.addEventListener('paste', handlePaste);
     return () => document.removeEventListener('paste', handlePaste);
-  }, [apartmentId]);
+  }, [apartmentId, readOnly]);
 
+  if (readOnly) return null;
   if (isPending) return <p className="text-xs text-gray-500 mt-1.5">Pasting image…</p>;
   if (justAdded) return <p className="text-xs text-emerald-600 mt-1.5">Image added ✓</p>;
   return <p className="text-xs text-gray-400 mt-1.5">Tip: paste an image (⌘V) to add a photo</p>;

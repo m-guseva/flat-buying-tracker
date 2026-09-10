@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { createDocument, deleteDocument } from '@/lib/db/documents';
+import { assertNotReadOnly } from '@/lib/readOnly';
 
 // Next.js 14.2.35's direct server-action invocation (calling this action
 // straight from a client event handler, not a <form> submit) mis-decodes
@@ -22,6 +23,7 @@ function fixMojibake(name: string): string {
 }
 
 export async function uploadDocumentAction(apartmentId: string, formData: FormData) {
+  assertNotReadOnly();
   const file = formData.get('file');
   if (!(file instanceof File)) {
     throw new Error('No file provided');
@@ -32,6 +34,7 @@ export async function uploadDocumentAction(apartmentId: string, formData: FormDa
 }
 
 export async function deleteDocumentAction(apartmentId: string, documentId: string) {
+  assertNotReadOnly();
   await deleteDocument(documentId);
   revalidatePath(`/apartments/${apartmentId}`);
 }

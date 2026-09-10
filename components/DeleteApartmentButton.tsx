@@ -2,9 +2,11 @@
 
 import { useTransition, type MouseEvent } from 'react';
 import { deleteApartmentAction } from '@/app/actions/apartments';
+import { isReadOnly } from '@/lib/readOnly';
 
 export function DeleteApartmentButton({ apartmentId }: { apartmentId: string }) {
   const [isPending, startTransition] = useTransition();
+  if (isReadOnly()) return null;
 
   function handleClick(event: MouseEvent) {
     event.preventDefault();

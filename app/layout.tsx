@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { isReadOnly } from "@/lib/readOnly";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,6 +20,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
+        {isReadOnly() && (
+          <div className="bg-amber-100 text-amber-800 text-sm text-center py-1.5">
+            Read-only view — changes are disabled
+          </div>
+        )}
         {children}
         {modal}
       </body>

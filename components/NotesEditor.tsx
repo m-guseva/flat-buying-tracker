@@ -2,10 +2,12 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { updateApartmentNotesAction } from '@/app/actions/apartments';
+import { isReadOnly } from '@/lib/readOnly';
 
 export function NotesEditor({ apartmentId, initialNotes }: { apartmentId: string; initialNotes: string }) {
   const [notes, setNotes] = useState(initialNotes);
   const timeoutRef = useRef<ReturnType<typeof setTimeout>>();
+  const readOnly = isReadOnly();
 
   useEffect(() => {
     return () => {
@@ -25,6 +27,7 @@ export function NotesEditor({ apartmentId, initialNotes }: { apartmentId: string
     <textarea
       value={notes}
       onChange={(event) => handleChange(event.target.value)}
+      readOnly={readOnly}
       placeholder="Notes"
       rows={8}
       className="glass-input block w-full"
