@@ -36,8 +36,15 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# local data
-/data
+# local data — app.db and uploaded files ARE tracked, on purpose: this is a
+# single-writer setup (only the local dev instance ever writes; any other
+# instance runs read-only, see NEXT_PUBLIC_READ_ONLY), so a plain git
+# pull/push is a safe way to sync data to it. Only the disposable test db
+# and SQLite's transient journal files stay ignored.
+/data/test.db
+/data/*.db-journal
+/data/*.db-wal
+/data/*.db-shm
 
 # raw saved listing pages used to build the scrapers (see tests/fixtures/)
 /example_htmls
