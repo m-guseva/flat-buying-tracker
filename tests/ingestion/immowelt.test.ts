@@ -27,10 +27,10 @@ describe('immoweltScraper.parse', () => {
     expect(result.address).toBe('Mitte, Mitte (10115)');
   });
 
-  it('extracts price, hausgeld, and maklerprovision from the price details box', () => {
+  it('extracts price, hausgeld, and maklerprovisionPercent from the price details box', () => {
     expect(result.price).toBe(360000);
     expect(result.hausgeld).toBe(380);
-    expect(result.maklerprovision).toBe('3,57 % inkl. MwSt.');
+    expect(result.maklerprovisionPercent).toBeCloseTo(3.57);
   });
 
   it('extracts rooms, living area, and floor from the hardfacts row', () => {
@@ -42,7 +42,7 @@ describe('immoweltScraper.parse', () => {
   it('detects balcony, elevator, and kitchen from the features list', () => {
     expect(result.balcony).toBe(true);
     expect(result.elevator).toBe(true);
-    expect(result.kitchen).toBe('Einbauküche');
+    expect(result.kitchen).toBe(true);
   });
 
   it('leaves condition undefined when no condition keyword is present', () => {

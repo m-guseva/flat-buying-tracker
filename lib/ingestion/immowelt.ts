@@ -2,6 +2,7 @@ import * as cheerio from 'cheerio';
 import type { Scraper, ScrapedApartment } from './types';
 import { extractGalleryImages } from './extractGalleryImages';
 import { parseGermanNumber } from './parseGermanNumber';
+import { parseProvisionPercent } from './parseProvisionPercent';
 
 const CDN_HOST = 'mms.immowelt.de';
 const USER_AGENT =
@@ -56,7 +57,9 @@ export const immoweltScraper: Scraper = {
     // section in a different format ("(3,57%)") — beforeCostBreakdown already
     // excludes that, so this only ever matches the first occurrence.
     const provisionMatch = beforeCostBreakdown.match(/Provision für Käufer([\d,]+\s*%[^]*?)(?=Geld vom Staat|$)/);
-    if (provisionMatch) result.maklerprovision = provisionMatch[1].trim();
+    if (provisionMatch) {
+      result.maklerprovisionPercent = parseProvisionPercent(provisionMatch[1].trim());
+    }
 
     const hardfactSpans = $('[data-testid="cdp-hardfacts-keyfacts"]')
       .children('span')
@@ -79,7 +82,7 @@ export const immoweltScraper: Scraper = {
       const text = $(el).text().trim();
       if (/balkon/i.test(text)) result.balcony = true;
       if (/aufzug|fahrstuhl/i.test(text)) result.elevator = true;
-      if (/einbauküche/i.test(text)) result.kitchen = text;
+      if (/einbauküche/i.test(text)) result.kitchen = true;
     });
 
     const localSrcs = $('[data-testid="cdp-medias-overview"]')

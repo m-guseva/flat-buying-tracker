@@ -23,10 +23,10 @@ export type CreateApartmentInput = {
   floor?: string;
   balcony?: boolean;
   elevator?: boolean;
-  kitchen?: string;
+  kitchen?: boolean;
   condition?: string;
   hausgeld?: number;
-  maklerprovision?: string;
+  maklerprovisionPercent?: number;
 };
 
 export type UpdateApartmentInput = Partial<CreateApartmentInput> & {

@@ -22,10 +22,10 @@ model Apartment {
   floor               String?
   balcony             Boolean?
   elevator            Boolean?
-  kitchen             String?
+  kitchen             Boolean?
   condition           String?
   hausgeld            Float?
-  maklerprovision     String?
+  maklerprovisionPercent Float?
   locationRating      Int?
   personalRating      Int?
   status              String   @default("NOT_CONTACTED")

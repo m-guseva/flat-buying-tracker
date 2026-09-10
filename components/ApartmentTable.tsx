@@ -2,17 +2,17 @@
 
 import { useRouter } from 'next/navigation';
 import type { Apartment } from '@prisma/client';
-import { getField, TABLE_COLUMN_FIELDS } from '@/lib/apartments/fields';
+import { getField, getFieldValue, TABLE_COLUMN_FIELDS } from '@/lib/apartments/fields';
 import { formatPrice, STATUS_LABELS, MAKLERVERTRAG_LABELS } from '@/lib/apartments/format';
 import type { SortCriterion } from '@/lib/apartments/sortApartments';
 
 function formatCell(apartment: Apartment, key: string): string {
   const field = getField(key);
   if (!field) return '—';
-  const value = (apartment as unknown as Record<string, unknown>)[key];
+  const value = getFieldValue(apartment, key);
   if (value == null) return '—';
 
-  if (key === 'price' || key === 'hausgeld') return formatPrice(value as number) ?? '—';
+  if (key === 'price' || key === 'hausgeld' || key === 'maklerFee') return formatPrice(value as number) ?? '—';
   if (key === 'livingArea') return `${value} m²`;
   if (key === 'status') return STATUS_LABELS[apartment.status] ?? String(value);
   if (key === 'maklervertragStatus') return MAKLERVERTRAG_LABELS[apartment.maklervertragStatus] ?? String(value);

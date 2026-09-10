@@ -1,7 +1,9 @@
 import { describe, it, expect } from 'vitest';
+import type { Apartment } from '@prisma/client';
 import {
   FIELDS,
   getField,
+  getFieldValue,
   FILTERABLE_FIELDS,
   SORTABLE_FIELDS,
   TABLE_COLUMN_FIELDS,
@@ -39,7 +41,7 @@ describe('fields catalog', () => {
     expect(createdAt?.tableColumn).toBe(false);
   });
 
-  it('defaults the table columns to address, price, livingArea, rooms, hausgeld, status, maklervertragStatus', () => {
+  it('defaults the table columns to address, price, livingArea, rooms, hausgeld, status, maklervertragStatus, maklerFee', () => {
     expect(DEFAULT_TABLE_COLUMNS).toEqual([
       'address',
       'price',
@@ -48,7 +50,18 @@ describe('fields catalog', () => {
       'hausgeld',
       'status',
       'maklervertragStatus',
+      'maklerFee',
     ]);
+  });
+
+  it('computes maklerFee from price and maklerprovisionPercent', () => {
+    const apartment = { price: 300000, maklerprovisionPercent: 3.57 } as Apartment;
+    expect(getFieldValue(apartment, 'maklerFee')).toBe(10710);
+  });
+
+  it('computes maklerFee as null when price or maklerprovisionPercent is missing', () => {
+    const apartment = { price: null, maklerprovisionPercent: null } as Apartment;
+    expect(getFieldValue(apartment, 'maklerFee')).toBeNull();
   });
 
   it('filters the catalog into filterable/sortable/table-column subsets', () => {

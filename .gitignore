@@ -39,5 +39,8 @@ next-env.d.ts
 # local data
 /data
 
+# raw saved listing pages used to build the scrapers (see tests/fixtures/)
+/example_htmls
+
 # superpowers subagent-driven-development scratch workspace
 /.superpowers

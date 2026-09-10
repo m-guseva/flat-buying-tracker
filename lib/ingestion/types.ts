@@ -7,10 +7,10 @@ export interface ScrapedApartment {
   floor?: string;
   balcony?: boolean;
   elevator?: boolean;
-  kitchen?: string;
+  kitchen?: boolean;
   condition?: string;
   hausgeld?: number;
-  maklerprovision?: string;
+  maklerprovisionPercent?: number;
   images: string[];
 }
 

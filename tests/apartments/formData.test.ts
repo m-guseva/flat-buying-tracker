@@ -37,6 +37,7 @@ describe('parseApartmentPropertiesForm', () => {
     formData.set('balcony', 'true');
     formData.set('elevator', 'false');
     formData.set('locationRating', '4');
+    formData.set('maklerprovisionPercent', '3.57');
 
     const input = parseApartmentPropertiesForm(formData);
 
@@ -46,6 +47,7 @@ describe('parseApartmentPropertiesForm', () => {
       balcony: true,
       elevator: false,
       locationRating: 4,
+      maklerprovisionPercent: 3.57,
     });
   });
 

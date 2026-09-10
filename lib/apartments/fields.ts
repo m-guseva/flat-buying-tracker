@@ -1,5 +1,5 @@
 import type { Apartment } from '@prisma/client';
-import { STATUS_LABELS, MAKLERVERTRAG_LABELS } from './format';
+import { STATUS_LABELS, MAKLERVERTRAG_LABELS, calculateMaklerFee } from './format';
 
 export type FieldType = 'text' | 'number' | 'boolean' | 'select';
 
@@ -17,6 +17,7 @@ export interface FieldDef {
   tableColumn: boolean;
   defaultColumn: boolean;
   options?: FieldOption[];
+  computed?: (apartment: Apartment) => unknown;
 }
 
 function toOptions(labels: Record<string, string>): FieldOption[] {
@@ -31,14 +32,23 @@ export const FIELDS: FieldDef[] = [
   { key: 'floor', label: 'Floor', type: 'text', filterable: true, sortable: false, tableColumn: true, defaultColumn: false },
   { key: 'balcony', label: 'Balcony', type: 'boolean', filterable: true, sortable: false, tableColumn: true, defaultColumn: false },
   { key: 'elevator', label: 'Elevator', type: 'boolean', filterable: true, sortable: false, tableColumn: true, defaultColumn: false },
-  { key: 'kitchen', label: 'Kitchen', type: 'text', filterable: true, sortable: false, tableColumn: true, defaultColumn: false },
+  { key: 'kitchen', label: 'Kitchen', type: 'boolean', filterable: true, sortable: false, tableColumn: true, defaultColumn: false },
   { key: 'condition', label: 'Condition', type: 'text', filterable: true, sortable: false, tableColumn: true, defaultColumn: false },
   { key: 'hausgeld', label: 'Hausgeld', type: 'number', filterable: true, sortable: true, tableColumn: true, defaultColumn: true },
-  { key: 'maklerprovision', label: 'Maklerprovision', type: 'text', filterable: true, sortable: false, tableColumn: true, defaultColumn: false },
   { key: 'locationRating', label: 'Location rating', type: 'number', filterable: true, sortable: true, tableColumn: true, defaultColumn: false },
   { key: 'personalRating', label: 'Personal rating', type: 'number', filterable: true, sortable: true, tableColumn: true, defaultColumn: false },
   { key: 'status', label: 'Status', type: 'select', filterable: true, sortable: true, tableColumn: true, defaultColumn: true, options: toOptions(STATUS_LABELS) },
   { key: 'maklervertragStatus', label: 'Maklervertrag', type: 'select', filterable: true, sortable: false, tableColumn: true, defaultColumn: true, options: toOptions(MAKLERVERTRAG_LABELS) },
+  {
+    key: 'maklerFee',
+    label: 'Makler fee',
+    type: 'number',
+    filterable: true,
+    sortable: true,
+    tableColumn: true,
+    defaultColumn: true,
+    computed: (apartment) => calculateMaklerFee(apartment.price, apartment.maklerprovisionPercent),
+  },
   { key: 'createdAt', label: 'Date added', type: 'number', filterable: false, sortable: true, tableColumn: false, defaultColumn: false },
 ];
 
@@ -47,6 +57,8 @@ export function getField(key: string): FieldDef | undefined {
 }
 
 export function getFieldValue(apartment: Apartment, key: string): unknown {
+  const field = getField(key);
+  if (field?.computed) return field.computed(apartment);
   return (apartment as unknown as Record<string, unknown>)[key];
 }
 

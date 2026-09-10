@@ -37,10 +37,10 @@ export function parseApartmentPropertiesForm(formData: FormData): UpdateApartmen
   const floor = getString('floor');
   const balcony = getBoolean('balcony');
   const elevator = getBoolean('elevator');
-  const kitchen = getString('kitchen');
+  const kitchen = getBoolean('kitchen');
   const condition = getString('condition');
   const hausgeld = getNumber('hausgeld');
-  const maklerprovision = getString('maklerprovision');
+  const maklerprovisionPercent = getNumber('maklerprovisionPercent');
   const locationRating = getNumber('locationRating');
   const personalRating = getNumber('personalRating');
 
@@ -55,7 +55,7 @@ export function parseApartmentPropertiesForm(formData: FormData): UpdateApartmen
   if (kitchen !== undefined) result.kitchen = kitchen;
   if (condition !== undefined) result.condition = condition;
   if (hausgeld !== undefined) result.hausgeld = hausgeld;
-  if (maklerprovision !== undefined) result.maklerprovision = maklerprovision;
+  if (maklerprovisionPercent !== undefined) result.maklerprovisionPercent = maklerprovisionPercent;
   if (locationRating !== undefined) result.locationRating = locationRating;
   if (personalRating !== undefined) result.personalRating = personalRating;
 

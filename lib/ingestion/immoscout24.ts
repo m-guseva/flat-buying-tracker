@@ -2,6 +2,7 @@ import * as cheerio from 'cheerio';
 import type { Scraper, ScrapedApartment } from './types';
 import { extractGalleryImages } from './extractGalleryImages';
 import { parseGermanNumber } from './parseGermanNumber';
+import { parseProvisionPercent } from './parseProvisionPercent';
 
 const CDN_HOST = 'pictures.immobilienscout24.de';
 const USER_AGENT =
@@ -60,13 +61,19 @@ export const immoscout24Scraper: Scraper = {
     const hausgeld = parseGermanNumber(qaText('is24qa-hausgeld'));
     if (hausgeld !== undefined) result.hausgeld = hausgeld;
     const maklerprovision = qaText('is24qa-provision');
-    if (maklerprovision) result.maklerprovision = maklerprovision;
+    if (maklerprovision) {
+      result.maklerprovisionPercent = parseProvisionPercent(maklerprovision);
+    }
 
     // IS24's boolean-feature indicator tags only render when the feature IS
     // present — there is no explicit "no balcony" tag — so absence means
     // "unknown", not "false". Only ever set true, never false.
     if ($('[data-qa="is24qa-balcony-label"]').length > 0) result.balcony = true;
     if ($('[data-qa="is24qa-lift-label"]').length > 0) result.elevator = true;
+    // No dedicated indicator tag confirmed for a fitted kitchen (not present
+    // on the sample listing) — fall back to a keyword match against the same
+    // container that holds the balcony/lift tags as human-readable text.
+    if (/einbauküche/i.test($('#is24-boolean-criteria').text())) result.kitchen = true;
 
     const localSrcs = $('#is24-gallery-entry-point')
       .find('img[data-testid="gallery-entry-image"]')

@@ -55,8 +55,8 @@ function fillableFieldsFrom(apartment: ApartmentWithRelations, scraped: ScrapedA
   if (scraped.kitchen !== undefined && apartment.kitchen == null) result.kitchen = scraped.kitchen;
   if (scraped.condition !== undefined && apartment.condition == null) result.condition = scraped.condition;
   if (scraped.hausgeld !== undefined && apartment.hausgeld == null) result.hausgeld = scraped.hausgeld;
-  if (scraped.maklerprovision !== undefined && apartment.maklerprovision == null) {
-    result.maklerprovision = scraped.maklerprovision;
+  if (scraped.maklerprovisionPercent !== undefined && apartment.maklerprovisionPercent == null) {
+    result.maklerprovisionPercent = scraped.maklerprovisionPercent;
   }
   return result;
 }

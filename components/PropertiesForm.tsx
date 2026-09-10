@@ -4,6 +4,7 @@ import { useTransition, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import type { Apartment } from '@prisma/client';
 import { updateApartmentPropertiesAction } from '@/app/actions/apartments';
+import { calculateMaklerFee, formatPrice } from '@/lib/apartments/format';
 
 export function PropertiesForm({
   apartment,
@@ -86,7 +87,11 @@ export function PropertiesForm({
         </label>
         <label className="block text-sm">
           Kitchen
-          <input name="kitchen" defaultValue={apartment.kitchen ?? ''} className="glass-input block w-full mt-1" />
+          <select name="kitchen" defaultValue={apartment.kitchen == null ? '' : String(apartment.kitchen)} className="glass-input block w-full mt-1">
+            <option value="">Unknown</option>
+            <option value="true">Yes</option>
+            <option value="false">No</option>
+          </select>
         </label>
         <label className="block text-sm">
           Condition
@@ -97,9 +102,18 @@ export function PropertiesForm({
           <input name="hausgeld" type="number" defaultValue={apartment.hausgeld ?? ''} className="glass-input block w-full mt-1" />
         </label>
         <label className="block text-sm">
-          Maklerprovision
-          <input name="maklerprovision" defaultValue={apartment.maklerprovision ?? ''} className="glass-input block w-full mt-1" />
+          Maklerprovision %
+          <input
+            name="maklerprovisionPercent"
+            type="number"
+            step="0.01"
+            defaultValue={apartment.maklerprovisionPercent ?? ''}
+            className="glass-input block w-full mt-1"
+          />
         </label>
+        <p className="text-sm text-gray-500">
+          Makler fee: {formatPrice(calculateMaklerFee(apartment.price, apartment.maklerprovisionPercent)) ?? '—'}
+        </p>
       </section>
 
       <section className="glass-panel p-4 space-y-3">

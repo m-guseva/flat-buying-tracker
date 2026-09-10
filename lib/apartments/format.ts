@@ -3,6 +3,14 @@ export function formatPrice(price: number | null | undefined): string | null {
   return `€${price.toLocaleString('de-DE')}`;
 }
 
+export function calculateMaklerFee(
+  price: number | null | undefined,
+  percent: number | null | undefined,
+): number | null {
+  if (price == null || percent == null) return null;
+  return Math.round((price * percent) / 100);
+}
+
 export function formatAreaAndRooms(
   livingArea: number | null | undefined,
   rooms: number | null | undefined,

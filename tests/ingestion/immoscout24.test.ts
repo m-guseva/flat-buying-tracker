@@ -25,12 +25,15 @@ describe('immoscout24Scraper.parse', () => {
     expect(result.price).toBe(229900);
   });
 
-  it('extracts rooms, living area, floor, hausgeld, and maklerprovision', () => {
+  it('extracts rooms, living area, floor, and hausgeld', () => {
     expect(result.rooms).toBe(2);
     expect(result.livingArea).toBeCloseTo(45.99);
     expect(result.floor).toBe('1 von 4');
     expect(result.hausgeld).toBe(328);
-    expect(result.maklerprovision).toBe('Nein');
+  });
+
+  it('leaves maklerprovisionPercent undefined when the text has no percentage', () => {
+    expect(result.maklerprovisionPercent).toBeUndefined();
   });
 
   it('detects balcony and elevator as present', () => {
@@ -41,6 +44,14 @@ describe('immoscout24Scraper.parse', () => {
   it('leaves condition and kitchen undefined when not present on the listing', () => {
     expect(result.condition).toBeUndefined();
     expect(result.kitchen).toBeUndefined();
+  });
+
+  it('detects kitchen when "Einbauküche" is mentioned in the boolean-criteria section', () => {
+    const htmlWithKitchen = fixtureHtml.replace(
+      'id="is24-boolean-criteria">',
+      'id="is24-boolean-criteria"><span>Einbauküche</span>',
+    );
+    expect(immoscout24Scraper.parse(htmlWithKitchen, sourceUrl).kitchen).toBe(true);
   });
 
   it('extracts the 4 real gallery images at full size, excluding recommended listings', () => {
