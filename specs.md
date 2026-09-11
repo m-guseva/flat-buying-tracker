@@ -772,10 +772,27 @@ The following were added after the MVP shipped, driven by real usage rather than
 * **Cover image selection** — within the apartment detail view, any photo in the carousel can be pinned as the card's title/cover image.
 * **Paste-to-upload images** — pasting an image (e.g. a screenshot, or a copy from Finder/a browser) anywhere on an apartment's detail view uploads it as a new photo, no dedicated upload button required.
 * **Visual redesign** — a glassmorphism-style visual language (translucent panels, backdrop blur, a soft gradient background) replaced the original plain design across cards, table, detail overlay, and forms. Section 24's UX principles (clean, personal-workspace feel) still hold; this is the concrete visual execution of them.
+* **Kitchen** — changed from free text to a Yes/No/Unknown property, matching Balcony/Elevator. Both scrapers detect it via an "Einbauküche" keyword match.
+* **Maklerprovision %** and **Makler fee** — the original free-text Maklerprovision field was replaced by a clean percentage field (auto-filled by the scrapers where they can extract one), and a computed Makler fee (price × percentage) is shown on the detail page and available as a sortable/filterable table column.
+* **Energieausweis** — property field for the German energy-efficiency rating, full official A+–H scale. Both scrapers extract the real grade from the listing page (an image `alt` attribute on ImmoScout24, a highlighted scale marker on Immowelt).
+* **Listing URL is manually editable** — previously only ever set automatically (scraping, or recovered from a dropped HTML file); can now be added or corrected by hand, e.g. for manually-created apartments.
+* **Status / Maklervertrag** — merged into a single panel as two dropdowns side by side; picking a value saves immediately (no separate "Update" button), and the timestamped status-history list was dropped from the display (the underlying history is still recorded, just not shown).
+* **Viewing date** — a date field appears next to Status/Maklervertrag once status reaches "Setup viewing" (and stays visible/editable for every later status, so the date isn't lost). Shown on the card as "Viewing: DD.MM.YYYY", highlighted orange when the date is today or still upcoming. Apartments are sorted by this by default: upcoming first (soonest first), then past viewings (most recent first), then apartments with no viewing date.
+* **Scratchpad** — a separate page (reachable via a button next to Search/Filter/Sort) for pasting links to listings that are too low-commitment to be a full card yet. Plain text, click to edit; any `https?://` URL renders as a clickable link once you click away.
 
 ---
 
-# 26. Future direction
+# 26. Read-only mode and remote access
+
+Added so a second person can view the tracker without either of you needing to keep a laptop on, and without giving them edit access.
+
+* **`NEXT_PUBLIC_READ_ONLY=true`** turns an instance fully view-only: every create/update/delete action is blocked (enforced server-side, not just hidden in the UI), and the edit controls (Add apartment, Delete, property fields, status/Maklervertrag dropdowns, document/image upload, Scratchpad editing) are hidden or disabled. A banner reading "Read-only view — changes are disabled" shows at the top.
+* **Data sync model**: exactly one instance is ever allowed to write — the local dev server. `data/app.db` and uploaded files under `data/files/` are committed to git (this was a deliberate change; they used to be gitignored). Workflow: edit locally → commit → push → `git pull` on the read-only side to refresh its data.
+* **Where it's hosted**: the app lives in a private GitHub repo. A read-only mirror can run on GitHub Codespaces (free tier, manual start/stop, ~60 hours/month) or on a host like Render (free tier, sleeps when idle and wakes automatically on the next visit — no manual restart needed, unlike Codespaces). As of this writing, the code is set up to deploy to Render (`package.json`'s `start`/`postinstall` scripts, env vars documented in `CLAUDE.md`), but the actual Render service had not yet been confirmed live.
+
+---
+
+# 27. Future direction
 
 The long-term product can evolve into a full apartment-buying command center.
 
