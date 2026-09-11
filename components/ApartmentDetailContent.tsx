@@ -8,6 +8,7 @@ import { NotesEditor } from '@/components/NotesEditor';
 import { ImageCarousel } from '@/components/ImageCarousel';
 import { PasteImageZone } from '@/components/PasteImageZone';
 import { PropertiesForm } from '@/components/PropertiesForm';
+import { AutoSubmitSelect } from '@/components/AutoSubmitSelect';
 import { isReadOnly } from '@/lib/readOnly';
 
 type ApartmentWithRelations = Apartment & {
@@ -56,30 +57,34 @@ export function ApartmentDetailContent({
 
       <section className="glass-panel p-4 space-y-3">
         <h2 className="text-lg font-medium">Process / status</h2>
-        <form action={updateApartmentStatusAction.bind(null, apartment.id)} className="flex gap-2">
-          <fieldset disabled={readOnly} className="flex gap-2">
-            <select name="status" defaultValue={apartment.status} className="glass-input">
-              {Object.entries(STATUS_LABELS).map(([value, label]) => (
-                <option key={value} value={value}>{label}</option>
-              ))}
-            </select>
-            <button type="submit" className="btn-secondary">Update status</button>
-          </fieldset>
-        </form>
-      </section>
-
-      <section className="glass-panel p-4 space-y-3">
-        <h2 className="text-lg font-medium">Maklervertrag</h2>
-        <form action={updateApartmentMaklervertragAction.bind(null, apartment.id)} className="flex gap-2">
-          <fieldset disabled={readOnly} className="flex gap-2">
-            <select name="maklervertragStatus" defaultValue={apartment.maklervertragStatus} className="glass-input">
-              {Object.entries(MAKLERVERTRAG_LABELS).map(([value, label]) => (
-                <option key={value} value={value}>{label}</option>
-              ))}
-            </select>
-            <button type="submit" className="btn-secondary">Update</button>
-          </fieldset>
-        </form>
+        <div className="flex gap-4">
+          <div>
+            <span className="block text-xs text-gray-500 mb-1">Status</span>
+            <form action={updateApartmentStatusAction.bind(null, apartment.id)}>
+              <fieldset disabled={readOnly}>
+                <AutoSubmitSelect
+                  name="status"
+                  defaultValue={apartment.status}
+                  options={Object.entries(STATUS_LABELS).map(([value, label]) => ({ value, label }))}
+                  className="glass-input"
+                />
+              </fieldset>
+            </form>
+          </div>
+          <div>
+            <span className="block text-xs text-gray-500 mb-1">Maklervertrag</span>
+            <form action={updateApartmentMaklervertragAction.bind(null, apartment.id)}>
+              <fieldset disabled={readOnly}>
+                <AutoSubmitSelect
+                  name="maklervertragStatus"
+                  defaultValue={apartment.maklervertragStatus}
+                  options={Object.entries(MAKLERVERTRAG_LABELS).map(([value, label]) => ({ value, label }))}
+                  className="glass-input"
+                />
+              </fieldset>
+            </form>
+          </div>
+        </div>
       </section>
 
       <PropertiesForm apartment={apartment} formId={PROPERTIES_FORM_ID} isModal={isModal} />
