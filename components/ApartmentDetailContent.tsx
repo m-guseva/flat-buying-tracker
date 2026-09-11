@@ -1,5 +1,5 @@
 import type { Apartment, Document as ApartmentDocument, Image as ApartmentImage, StatusHistory } from '@prisma/client';
-import { STATUS_LABELS, MAKLERVERTRAG_LABELS, SOURCE_LABELS } from '@/lib/apartments/format';
+import { STATUS_LABELS, STATUS_ORDER, MAKLERVERTRAG_LABELS, SOURCE_LABELS } from '@/lib/apartments/format';
 import {
   updateApartmentStatusAction,
   updateApartmentMaklervertragAction,
@@ -89,7 +89,7 @@ export function ApartmentDetailContent({
               </fieldset>
             </form>
           </div>
-          {(apartment.status === 'SETUP_VIEWING' || apartment.viewingDate) && (
+          {(STATUS_ORDER.indexOf(apartment.status) >= STATUS_ORDER.indexOf('SETUP_VIEWING') || apartment.viewingDate) && (
             <div>
               <span className="block text-xs text-gray-500 mb-1">Viewing date</span>
               <form action={updateApartmentViewingDateAction.bind(null, apartment.id)}>

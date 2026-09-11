@@ -39,6 +39,8 @@ export const STATUS_LABELS: Record<string, string> = {
   INTEREST_FOR_PURCHASE: 'Interest for purchase',
 };
 
+export const STATUS_ORDER = Object.keys(STATUS_LABELS);
+
 export const MAKLERVERTRAG_LABELS: Record<string, string> = {
   NOT_RECEIVED: 'Not received',
   RECEIVED: 'Received',
