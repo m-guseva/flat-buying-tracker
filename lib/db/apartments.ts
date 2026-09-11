@@ -34,6 +34,7 @@ export type UpdateApartmentInput = Partial<CreateApartmentInput> & {
   locationRating?: number;
   personalRating?: number;
   maklervertragStatus?: MaklervertragStatus;
+  viewingDate?: string | null;
   notes?: string;
 };
 

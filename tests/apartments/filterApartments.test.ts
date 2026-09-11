@@ -23,6 +23,7 @@ function makeApartment(overrides: Partial<Apartment> = {}): Apartment {
     locationRating: null,
     personalRating: 4,
     status: 'CONTACTED',
+    viewingDate: null,
     maklervertragStatus: 'NOT_RECEIVED',
     notes: null,
     createdAt: new Date('2026-09-01'),

@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import type { Apartment, Image as ApartmentImage } from '@prisma/client';
-import { formatPrice, formatAreaAndRooms, STATUS_LABELS } from '@/lib/apartments/format';
+import { formatPrice, formatAreaAndRooms, formatViewingDate, STATUS_LABELS } from '@/lib/apartments/format';
 import { ImageCarousel } from '@/components/ImageCarousel';
 import { DeleteApartmentButton } from '@/components/DeleteApartmentButton';
 
@@ -27,6 +27,11 @@ export function ApartmentCard({ apartment }: ApartmentCardProps) {
             {STATUS_LABELS[apartment.status]}
           </span>
         </div>
+        {apartment.viewingDate && (
+          <div className="text-sm text-gray-500">
+            Viewing: {formatViewingDate(apartment.viewingDate)}
+          </div>
+        )}
       </div>
     </Link>
   );

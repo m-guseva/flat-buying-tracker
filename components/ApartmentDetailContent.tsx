@@ -1,6 +1,10 @@
 import type { Apartment, Document as ApartmentDocument, Image as ApartmentImage, StatusHistory } from '@prisma/client';
 import { STATUS_LABELS, MAKLERVERTRAG_LABELS, SOURCE_LABELS } from '@/lib/apartments/format';
-import { updateApartmentStatusAction, updateApartmentMaklervertragAction } from '@/app/actions/apartments';
+import {
+  updateApartmentStatusAction,
+  updateApartmentMaklervertragAction,
+  updateApartmentViewingDateAction,
+} from '@/app/actions/apartments';
 import { deleteDocumentAction } from '@/app/actions/documents';
 import { DocumentDropzone } from '@/components/DocumentDropzone';
 import { ImportRetryDropzone } from '@/components/ImportRetryDropzone';
@@ -9,6 +13,7 @@ import { ImageCarousel } from '@/components/ImageCarousel';
 import { PasteImageZone } from '@/components/PasteImageZone';
 import { PropertiesForm } from '@/components/PropertiesForm';
 import { AutoSubmitSelect } from '@/components/AutoSubmitSelect';
+import { AutoSubmitDateInput } from '@/components/AutoSubmitDateInput';
 import { isReadOnly } from '@/lib/readOnly';
 
 type ApartmentWithRelations = Apartment & {
@@ -84,6 +89,20 @@ export function ApartmentDetailContent({
               </fieldset>
             </form>
           </div>
+          {(apartment.status === 'SETUP_VIEWING' || apartment.viewingDate) && (
+            <div>
+              <span className="block text-xs text-gray-500 mb-1">Viewing date</span>
+              <form action={updateApartmentViewingDateAction.bind(null, apartment.id)}>
+                <fieldset disabled={readOnly}>
+                  <AutoSubmitDateInput
+                    name="viewingDate"
+                    defaultValue={apartment.viewingDate ?? ''}
+                    className="glass-input"
+                  />
+                </fieldset>
+              </form>
+            </div>
+          )}
         </div>
       </section>
 

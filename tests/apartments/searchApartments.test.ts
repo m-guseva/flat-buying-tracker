@@ -25,6 +25,7 @@ function makeApartment(overrides: Partial<ApartmentWithDocuments> = {}): Apartme
     locationRating: null,
     personalRating: null,
     status: 'NOT_CONTACTED',
+    viewingDate: null,
     maklervertragStatus: 'NOT_RECEIVED',
     notes: 'Really like the light',
     createdAt: new Date('2026-09-01'),

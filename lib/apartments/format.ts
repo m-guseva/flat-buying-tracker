@@ -11,6 +11,15 @@ export function calculateMaklerFee(
   return Math.round((price * percent) / 100);
 }
 
+export function formatViewingDate(viewingDate: string | null | undefined): string | null {
+  if (!viewingDate) return null;
+  // Plain string reformat, not a Date round-trip — viewingDate is stored as a
+  // bare YYYY-MM-DD (matching <input type="date">'s own format), so this
+  // avoids any UTC/local timezone shift a Date object would risk.
+  const [year, month, day] = viewingDate.split('-');
+  return `${day}.${month}.${year}`;
+}
+
 export function formatAreaAndRooms(
   livingArea: number | null | undefined,
   rooms: number | null | undefined,

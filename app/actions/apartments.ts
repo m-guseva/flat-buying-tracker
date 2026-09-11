@@ -45,6 +45,14 @@ export async function updateApartmentMaklervertragAction(id: string, formData: F
   revalidatePath('/');
 }
 
+export async function updateApartmentViewingDateAction(id: string, formData: FormData) {
+  assertNotReadOnly();
+  const viewingDate = formData.get('viewingDate')?.toString();
+  await updateApartment(id, { viewingDate: viewingDate || null });
+  revalidatePath(`/apartments/${id}`);
+  revalidatePath('/');
+}
+
 export async function updateApartmentNotesAction(id: string, notes: string) {
   assertNotReadOnly();
   await updateApartment(id, { notes });

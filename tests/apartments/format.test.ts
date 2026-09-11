@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { formatPrice, formatAreaAndRooms, calculateMaklerFee } from '@/lib/apartments/format';
+import { formatPrice, formatAreaAndRooms, calculateMaklerFee, formatViewingDate } from '@/lib/apartments/format';
 
 describe('formatPrice', () => {
   it('formats a price in German locale', () => {
@@ -41,5 +41,16 @@ describe('calculateMaklerFee', () => {
 
   it('returns null when the percentage is missing', () => {
     expect(calculateMaklerFee(345000, null)).toBeNull();
+  });
+});
+
+describe('formatViewingDate', () => {
+  it('formats a YYYY-MM-DD string in German day.month.year order', () => {
+    expect(formatViewingDate('2026-09-15')).toBe('15.09.2026');
+  });
+
+  it('returns null for missing input', () => {
+    expect(formatViewingDate(null)).toBeNull();
+    expect(formatViewingDate(undefined)).toBeNull();
   });
 });

@@ -30,6 +30,7 @@ model Apartment {
   locationRating      Int?
   personalRating      Int?
   status              String   @default("NOT_CONTACTED")
+  viewingDate         String?
   maklervertragStatus String   @default("NOT_RECEIVED")
   notes               String?
   createdAt           DateTime @default(now())
