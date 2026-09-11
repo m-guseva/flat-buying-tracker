@@ -25,7 +25,7 @@ export function ColumnPicker({
             type="checkbox"
             checked={selected.includes(field.key)}
             onChange={() => toggle(field.key)}
-            className="accent-indigo-600"
+            className="accent-[var(--accent-1)]"
           />
           {field.label}
         </label>

@@ -2,37 +2,111 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --accent-1: #f97316;
+  --accent-2: #f59e0b;
+  --accent-glow: rgba(249, 115, 22, 0.45);
+  --accent-soft-bg: rgba(249, 115, 22, 0.12);
+  --accent-soft-text: #c2410c;
+  --glow-1: rgba(251, 146, 60, 0.35);
+  --glow-2: rgba(249, 115, 22, 0.2);
+  --glow-3: rgba(253, 186, 116, 0.32);
+  --bg-base: #fffaf5;
+}
+
+[data-theme="dark"] {
+  --accent-1: #8b5cf6;
+  --accent-2: #6366f1;
+  --accent-glow: rgba(139, 92, 246, 0.55);
+  --accent-soft-bg: rgba(139, 92, 246, 0.18);
+  --accent-soft-text: #c4b5fd;
+  --glow-1: rgba(139, 92, 246, 0.45);
+  --glow-2: rgba(168, 85, 247, 0.32);
+  --glow-3: rgba(99, 102, 241, 0.28);
+  --bg-base: #0a0a10;
+}
+
 body {
-  color: #1e293b;
+  color: #2b2118;
   min-height: 100vh;
-  background: linear-gradient(135deg, #eef2ff 0%, #f5f3ff 35%, #fdf2f8 70%, #eff6ff 100%);
+  background:
+    radial-gradient(650px circle at 12% -10%, var(--glow-1), transparent 60%),
+    radial-gradient(550px circle at 100% 15%, var(--glow-3), transparent 60%),
+    radial-gradient(600px circle at 85% 100%, var(--glow-2), transparent 60%),
+    var(--bg-base);
   background-attachment: fixed;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+[data-theme="dark"] body {
+  color: #f5f3ff;
 }
 
 @layer components {
-  /* Frosted-glass surface: translucent white over the page gradient, blurred. */
+  /* Frosted-glass surface: translucent surface over the page's ambient glow, blurred. */
   .glass-panel {
-    @apply bg-white/70 backdrop-blur-md border border-white/60 shadow-lg shadow-indigo-100/50 rounded-2xl;
+    @apply bg-white/70 dark:bg-white/[0.04] backdrop-blur-md border border-white/60 dark:border-white/10 shadow-lg shadow-orange-200/30 dark:shadow-none rounded-2xl;
   }
 
   .glass-card {
-    @apply bg-white/70 backdrop-blur-md border border-white/60 shadow-lg shadow-indigo-100/50 rounded-2xl transition-all duration-200 hover:shadow-xl hover:shadow-indigo-200/60 hover:-translate-y-0.5;
+    @apply bg-white/70 dark:bg-white/[0.045] backdrop-blur-md border border-white/60 dark:border-white/10 shadow-lg shadow-orange-200/30 dark:shadow-none rounded-2xl transition-all duration-200 hover:shadow-xl hover:shadow-orange-300/40 dark:hover:shadow-none dark:hover:border-white/20 hover:-translate-y-0.5;
   }
 
   .glass-input {
-    @apply bg-white/60 backdrop-blur-sm border border-white/70 rounded-lg px-3 py-1.5 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-400/50 focus:border-indigo-300 transition;
+    @apply bg-white/70 dark:bg-white/5 backdrop-blur-sm border border-white/80 dark:border-white/10 rounded-full px-3 py-1.5 text-sm placeholder:text-gray-400 dark:placeholder:text-white/30 outline-none transition;
+  }
+
+  /* Same surface as .glass-input, but plain rounded corners — a pill radius on
+     a tall multi-line box crops in from the sides and swallows the text. */
+  .glass-textarea {
+    @apply bg-white/70 dark:bg-white/5 backdrop-blur-sm border border-white/80 dark:border-white/10 rounded-2xl px-3 py-2 text-sm placeholder:text-gray-400 dark:placeholder:text-white/30 outline-none transition;
+  }
+
+  .glass-input:focus,
+  .glass-textarea:focus {
+    border-color: var(--accent-1);
+    box-shadow: 0 0 0 3px var(--accent-glow);
   }
 
   .btn-primary {
-    @apply px-4 py-2 rounded-lg bg-indigo-600 text-white font-medium shadow-md shadow-indigo-300/40 hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply px-4 py-2 rounded-full text-white font-medium transition-opacity hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed;
+    background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+    box-shadow: 0 0 18px var(--accent-glow);
   }
 
   .btn-secondary {
-    @apply px-3 py-1.5 rounded-lg bg-white/60 backdrop-blur-sm border border-white/70 text-gray-700 text-sm hover:bg-white/90 transition;
+    @apply px-3 py-1.5 rounded-full bg-white/60 dark:bg-white/5 backdrop-blur-sm border border-white/70 dark:border-white/10 text-gray-700 dark:text-white/70 text-sm hover:bg-white/90 dark:hover:bg-white/10 transition;
   }
 
   .btn-secondary-active {
-    @apply px-3 py-1.5 rounded-lg bg-indigo-600 text-white text-sm shadow-md shadow-indigo-300/40;
+    @apply px-3 py-1.5 rounded-full text-white text-sm;
+    background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+    box-shadow: 0 0 18px var(--accent-glow);
+  }
+
+  /* Gradient headline accent, e.g. the app title's last word. */
+  .accent-text {
+    background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Status badge tinted with the theme accent. */
+  .status-pill {
+    display: inline-block;
+    border-radius: 9999px;
+    padding: 0.125rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    background: var(--accent-soft-bg);
+    color: var(--accent-soft-text);
+  }
+
+  /* Drag-over highlight for dropzones, tinted with the theme accent. */
+  .drop-active {
+    border-color: var(--accent-1);
+    background: var(--accent-soft-bg);
   }
 }
 

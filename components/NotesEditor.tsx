@@ -30,7 +30,7 @@ export function NotesEditor({ apartmentId, initialNotes }: { apartmentId: string
       readOnly={readOnly}
       placeholder="Notes"
       rows={8}
-      className="glass-input block w-full"
+      className="glass-textarea block w-full"
     />
   );
 }

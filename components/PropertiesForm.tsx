@@ -133,7 +133,7 @@ export function PropertiesForm({
               className="glass-input block w-full mt-1"
             />
           </label>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-gray-500 dark:text-white/40">
             Makler fee: {formatPrice(calculateMaklerFee(apartment.price, apartment.maklerprovisionPercent)) ?? '—'}
           </p>
         </section>

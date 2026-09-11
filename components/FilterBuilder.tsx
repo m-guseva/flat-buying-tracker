@@ -118,18 +118,26 @@ export function FilterBuilder({
                 className="glass-input w-28"
               />
             )}
-            <button type="button" onClick={() => removeCondition(condition.id)} className="text-red-600 text-sm hover:text-red-700">
+            <button
+              type="button"
+              onClick={() => removeCondition(condition.id)}
+              className="text-red-600 dark:text-red-400 text-sm hover:text-red-700 dark:hover:text-red-300"
+            >
               Remove
             </button>
           </div>
         );
       })}
       <div className="flex gap-3">
-        <button type="button" onClick={addCondition} className="text-sm text-indigo-600 hover:text-indigo-700">
+        <button type="button" onClick={addCondition} className="text-sm text-[var(--accent-1)] hover:opacity-80">
           + Add filter
         </button>
         {conditions.length > 0 && (
-          <button type="button" onClick={() => onChange([])} className="text-sm text-gray-500 hover:text-gray-700">
+          <button
+            type="button"
+            onClick={() => onChange([])}
+            className="text-sm text-gray-500 dark:text-white/40 hover:text-gray-700 dark:hover:text-white/60"
+          >
             Clear filters
           </button>
         )}

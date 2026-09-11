@@ -56,18 +56,18 @@ export function ApartmentBrowser({ apartments }: { apartments: ApartmentWithRela
           placeholder="Search"
           className="glass-input flex-1 min-w-[160px]"
         />
-        <div className="flex rounded-lg overflow-hidden border border-white/70 text-sm">
+        <div className="flex gap-2 text-sm">
           <button
             type="button"
             onClick={() => setViewMode('card')}
-            className={`px-3 py-1.5 transition-colors ${viewMode === 'card' ? 'bg-indigo-600 text-white' : 'bg-white/60 hover:bg-white/90'}`}
+            className={viewMode === 'card' ? 'btn-secondary-active' : 'btn-secondary'}
           >
             Cards
           </button>
           <button
             type="button"
             onClick={() => setViewMode('table')}
-            className={`px-3 py-1.5 transition-colors ${viewMode === 'table' ? 'bg-indigo-600 text-white' : 'bg-white/60 hover:bg-white/90'}`}
+            className={viewMode === 'table' ? 'btn-secondary-active' : 'btn-secondary'}
           >
             Table
           </button>
@@ -114,10 +114,14 @@ export function ApartmentBrowser({ apartments }: { apartments: ApartmentWithRela
           {filters.map((filter) => (
             <span
               key={filter.id}
-              className="text-xs bg-white/70 backdrop-blur-sm border border-white/60 rounded-full px-3 py-1 flex items-center gap-1 shadow-sm"
+              className="text-xs bg-white/70 dark:bg-white/5 backdrop-blur-sm border border-white/60 dark:border-white/10 rounded-full px-3 py-1 flex items-center gap-1 shadow-sm dark:shadow-none"
             >
               {getField(filter.field)?.label ?? filter.field} {filter.operator} {filter.value}
-              <button type="button" onClick={() => removeFilter(filter.id)} className="text-gray-500 hover:text-red-600">
+              <button
+                type="button"
+                onClick={() => removeFilter(filter.id)}
+                className="text-gray-500 dark:text-white/40 hover:text-red-600 dark:hover:text-red-400"
+              >
                 ×
               </button>
             </span>

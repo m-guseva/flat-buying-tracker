@@ -49,7 +49,7 @@ export function ApartmentTable({
     <div className="glass-panel overflow-x-auto p-1">
       <table className="w-full text-sm border-collapse">
         <thead>
-          <tr className="text-left border-b border-white/70 bg-white/40 backdrop-blur-sm">
+          <tr className="text-left border-b border-white/70 dark:border-white/10 bg-white/40 dark:bg-white/5 backdrop-blur-sm">
             {orderedColumns.map((key) => {
               const field = getField(key);
               const isSorted = primarySort?.field === key;
@@ -58,8 +58,8 @@ export function ApartmentTable({
                   key={key}
                   onClick={() => handleHeaderClick(key)}
                   className={`py-2 px-3 font-medium first:rounded-tl-xl last:rounded-tr-xl ${
-                    field?.sortable ? 'cursor-pointer select-none hover:text-indigo-700' : ''
-                  } ${isSorted ? 'text-indigo-700' : 'text-gray-600'}`}
+                    field?.sortable ? 'cursor-pointer select-none hover:text-[var(--accent-1)]' : ''
+                  } ${isSorted ? 'text-[var(--accent-1)]' : 'text-gray-600 dark:text-white/50'}`}
                 >
                   {field?.label ?? key}
                   {isSorted && <span className="ml-1">{primarySort.direction === 'asc' ? '▲' : '▼'}</span>}
@@ -73,7 +73,7 @@ export function ApartmentTable({
             <tr
               key={apartment.id}
               onClick={() => router.push(`/apartments/${apartment.id}`)}
-              className="border-b border-white/50 hover:bg-white/60 cursor-pointer transition-colors"
+              className="border-b border-white/50 dark:border-white/10 hover:bg-white/60 dark:hover:bg-white/5 cursor-pointer transition-colors"
             >
               {orderedColumns.map((key) => (
                 <td key={key} className="py-2 px-3">

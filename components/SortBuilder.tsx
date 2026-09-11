@@ -30,7 +30,7 @@ export function SortBuilder({
     <div className="glass-panel p-3 space-y-2">
       {criteria.map((criterion, index) => (
         <div key={criterion.id} className="flex flex-wrap items-center gap-2 text-sm">
-          <span className="text-gray-400 w-16">{index === 0 ? 'Sort by' : 'then by'}</span>
+          <span className="text-gray-400 dark:text-white/30 w-16">{index === 0 ? 'Sort by' : 'then by'}</span>
           <select
             value={criterion.field}
             onChange={(e) => updateCriterion(criterion.id, { field: e.target.value })}
@@ -50,17 +50,25 @@ export function SortBuilder({
             <option value="asc">↑ ascending</option>
             <option value="desc">↓ descending</option>
           </select>
-          <button type="button" onClick={() => removeCriterion(criterion.id)} className="text-red-600 text-sm hover:text-red-700">
+          <button
+            type="button"
+            onClick={() => removeCriterion(criterion.id)}
+            className="text-red-600 dark:text-red-400 text-sm hover:text-red-700 dark:hover:text-red-300"
+          >
             Remove
           </button>
         </div>
       ))}
       <div className="flex gap-3">
-        <button type="button" onClick={addCriterion} className="text-sm text-indigo-600 hover:text-indigo-700">
+        <button type="button" onClick={addCriterion} className="text-sm text-[var(--accent-1)] hover:opacity-80">
           + Add sort level
         </button>
         {criteria.length > 0 && (
-          <button type="button" onClick={() => onChange([])} className="text-sm text-gray-500 hover:text-gray-700">
+          <button
+            type="button"
+            onClick={() => onChange([])}
+            className="text-sm text-gray-500 dark:text-white/40 hover:text-gray-700 dark:hover:text-white/60"
+          >
             Clear sort
           </button>
         )}

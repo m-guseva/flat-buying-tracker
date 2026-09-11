@@ -48,7 +48,7 @@ export function ScratchpadEditor({
         onChange={(event) => handleChange(event.target.value)}
         onBlur={handleBlur}
         placeholder="Paste links here…"
-        className="glass-input block w-full min-h-[60vh] whitespace-pre-wrap"
+        className="glass-textarea block w-full min-h-[60vh] whitespace-pre-wrap"
       />
     );
   }
@@ -56,12 +56,12 @@ export function ScratchpadEditor({
   return (
     <div
       onClick={() => !readOnly && setIsEditing(true)}
-      className={`glass-input block w-full min-h-[60vh] whitespace-pre-wrap ${readOnly ? '' : 'cursor-text'}`}
+      className={`glass-textarea block w-full min-h-[60vh] whitespace-pre-wrap ${readOnly ? '' : 'cursor-text'}`}
     >
       {content ? (
         renderLinkified(content)
       ) : (
-        <span className="text-gray-400">{readOnly ? 'Nothing here yet.' : 'Click to paste a link…'}</span>
+        <span className="text-gray-400 dark:text-white/30">{readOnly ? 'Nothing here yet.' : 'Click to paste a link…'}</span>
       )}
     </div>
   );
@@ -76,7 +76,7 @@ function renderLinkified(text: string) {
         target="_blank"
         rel="noreferrer"
         onClick={(event) => event.stopPropagation()}
-        className="text-indigo-600 hover:text-indigo-700 underline"
+        className="text-[var(--accent-1)] hover:opacity-80 underline"
       >
         {segment.value}
       </a>

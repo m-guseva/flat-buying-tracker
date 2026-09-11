@@ -35,7 +35,7 @@ export function PasteImageZone({ apartmentId }: { apartmentId: string }) {
   }, [apartmentId, readOnly]);
 
   if (readOnly) return null;
-  if (isPending) return <p className="text-xs text-gray-500 mt-1.5">Pasting image…</p>;
-  if (justAdded) return <p className="text-xs text-emerald-600 mt-1.5">Image added ✓</p>;
-  return <p className="text-xs text-gray-400 mt-1.5">Tip: paste an image (⌘V) to add a photo</p>;
+  if (isPending) return <p className="text-xs text-gray-500 dark:text-white/40 mt-1.5">Pasting image…</p>;
+  if (justAdded) return <p className="text-xs text-emerald-600 dark:text-emerald-400 mt-1.5">Image added ✓</p>;
+  return <p className="text-xs text-gray-400 dark:text-white/30 mt-1.5">Tip: paste an image (⌘V) to add a photo</p>;
 }

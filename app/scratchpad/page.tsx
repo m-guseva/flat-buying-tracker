@@ -9,14 +9,14 @@ export default async function ScratchpadPage() {
   return (
     <main className="max-w-3xl mx-auto p-6 space-y-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold bg-gradient-to-r from-indigo-600 to-fuchsia-500 bg-clip-text text-transparent">
+        <h1 className="text-2xl font-semibold accent-text">
           Scratchpad
         </h1>
         <Link href="/" className="btn-secondary">
           ← Back
         </Link>
       </div>
-      <p className="text-sm text-gray-500">
+      <p className="text-sm text-gray-500 dark:text-white/40">
         Low-commitment listings — paste links here before they earn a full card.
       </p>
       <ScratchpadEditor initialContent={content} readOnly={isReadOnly()} />

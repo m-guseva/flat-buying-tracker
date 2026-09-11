@@ -37,11 +37,11 @@ export function ImportRetryDropzone({ apartmentId }: { apartmentId: string }) {
       onDrop={handleDrop}
       className={
         isDragging
-          ? 'border-2 border-dashed border-indigo-400 bg-indigo-50/60 backdrop-blur-sm rounded-xl p-4 text-center space-y-2'
-          : 'border-2 border-dashed border-amber-300 bg-amber-50/70 backdrop-blur-sm rounded-xl p-4 text-center space-y-2'
+          ? 'drop-active border-2 border-dashed backdrop-blur-sm rounded-xl p-4 text-center space-y-2'
+          : 'border-2 border-dashed border-amber-300 dark:border-amber-500/40 bg-amber-50/70 dark:bg-amber-500/10 backdrop-blur-sm rounded-xl p-4 text-center space-y-2'
       }
     >
-      <p className="text-sm text-gray-700">
+      <p className="text-sm text-gray-700 dark:text-amber-200/80">
         {isPending ? 'Importing…' : 'Automatic import failed — drop the saved page here to fill in details automatically'}
       </p>
       <input type="file" accept=".html,.htm" onChange={handleChange} />

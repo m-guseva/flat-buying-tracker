@@ -99,15 +99,15 @@ export function AddApartmentCard() {
 
   if (state.phase === 'duplicate') {
     return (
-      <div className={`${baseClass} border-white/70 bg-white/50 gap-2`}>
+      <div className={`${baseClass} border-white/70 dark:border-white/10 bg-white/50 dark:bg-white/5 gap-2`}>
         <p className="font-medium">This listing may already exist.</p>
-        <Link href={`/apartments/${state.existingApartmentId}`} className="text-indigo-600 text-sm">
+        <Link href={`/apartments/${state.existingApartmentId}`} className="text-[var(--accent-1)] text-sm">
           Open existing apartment
         </Link>
-        <button type="button" onClick={handleCreateAnyway} className="text-sm text-gray-600 underline">
+        <button type="button" onClick={handleCreateAnyway} className="text-sm text-gray-600 dark:text-white/60 underline">
           Create anyway
         </button>
-        <button type="button" onClick={() => setState({ phase: 'idle' })} className="text-sm text-gray-400">
+        <button type="button" onClick={() => setState({ phase: 'idle' })} className="text-sm text-gray-400 dark:text-white/30">
           Cancel
         </button>
       </div>
@@ -116,10 +116,10 @@ export function AddApartmentCard() {
 
   if (state.phase === 'invalid') {
     return (
-      <div className={`${baseClass} border-white/70 bg-white/50 gap-2`}>
+      <div className={`${baseClass} border-white/70 dark:border-white/10 bg-white/50 dark:bg-white/5 gap-2`}>
         <p className="font-medium">Couldn&apos;t recognize that as a listing URL or saved page.</p>
-        <p className="text-sm text-gray-500">Check the link, or try a different file.</p>
-        <button type="button" onClick={() => setState({ phase: 'idle' })} className="text-sm text-gray-400">
+        <p className="text-sm text-gray-500 dark:text-white/40">Check the link, or try a different file.</p>
+        <button type="button" onClick={() => setState({ phase: 'idle' })} className="text-sm text-gray-400 dark:text-white/30">
           Cancel
         </button>
       </div>
@@ -128,7 +128,7 @@ export function AddApartmentCard() {
 
   if (state.phase === 'submitting') {
     return (
-      <div className={`${baseClass} border-white/70 bg-white/50 text-gray-500`}>
+      <div className={`${baseClass} border-white/70 dark:border-white/10 bg-white/50 dark:bg-white/5 text-gray-500 dark:text-white/40`}>
         <span className="text-sm">{PROGRESS_MESSAGES[progressIndex]}</span>
       </div>
     );
@@ -144,11 +144,11 @@ export function AddApartmentCard() {
       onDrop={handleDrop}
       className={
         isDragging
-          ? `${baseClass} border-indigo-400 bg-indigo-50/60 text-gray-500`
-          : `${baseClass} border-white/70 bg-white/40 text-gray-500 hover:border-indigo-300 hover:bg-white/60`
+          ? `${baseClass} drop-active text-gray-500 dark:text-white/40`
+          : `${baseClass} border-white/70 dark:border-white/10 bg-white/40 dark:bg-white/5 text-gray-500 dark:text-white/40 hover:border-[var(--accent-1)] dark:hover:bg-white/10`
       }
     >
-      <span className="text-3xl text-indigo-500">+</span>
+      <span className="text-3xl text-[var(--accent-1)]">+</span>
       <span className="font-medium">Add apartment</span>
       <form onSubmit={handleSubmit} className="w-full">
         <input
@@ -165,7 +165,7 @@ export function AddApartmentCard() {
           matches the [id] segment just like a real apartment id would,
           which 404s looking up an apartment that doesn't exist. A full
           navigation bypasses interception and hits the real page. */}
-      <a href="/apartments/new" className="text-indigo-600 text-sm">
+      <a href="/apartments/new" className="text-[var(--accent-1)] text-sm">
         or create manually
       </a>
     </div>

@@ -22,7 +22,7 @@ export function ImageCarousel({
   if (images.length === 0) {
     return (
       <div className="w-full h-full flex items-center justify-center">
-        <span className="text-gray-400 text-sm">No image</span>
+        <span className="text-gray-400 dark:text-white/30 text-sm">No image</span>
       </div>
     );
   }
@@ -63,10 +63,10 @@ export function ImageCarousel({
           aria-label={index === 0 ? 'Current cover photo' : 'Set as cover photo'}
           onClick={handleSetCover}
           disabled={isPending || index === 0}
-          className={`absolute top-1 left-1 rounded-full w-6 h-6 flex items-center justify-center text-sm shadow-md border backdrop-blur-sm transition-colors ${
+          className={`absolute top-1 left-1 rounded-full w-6 h-6 flex items-center justify-center text-sm shadow-md dark:shadow-none border backdrop-blur-sm transition-colors ${
             index === 0
               ? 'bg-amber-400/90 border-amber-300 text-white cursor-default'
-              : 'bg-white/80 border-white/60 text-gray-500 hover:text-amber-500'
+              : 'bg-white/80 dark:bg-black/40 border-white/60 dark:border-white/10 text-gray-500 dark:text-white/50 hover:text-amber-500'
           }`}
         >
           {index === 0 ? '★' : '☆'}
@@ -78,7 +78,7 @@ export function ImageCarousel({
             type="button"
             aria-label="Previous image"
             onClick={(event) => goTo(index - 1, event)}
-            className="absolute left-1 top-1/2 -translate-y-1/2 bg-white/80 backdrop-blur-sm border border-white/60 shadow-md rounded-full w-6 h-6 flex items-center justify-center text-sm"
+            className="absolute left-1 top-1/2 -translate-y-1/2 bg-white/80 dark:bg-black/40 backdrop-blur-sm border border-white/60 dark:border-white/10 shadow-md dark:shadow-none rounded-full w-6 h-6 flex items-center justify-center text-sm"
           >
             ‹
           </button>
@@ -86,7 +86,7 @@ export function ImageCarousel({
             type="button"
             aria-label="Next image"
             onClick={(event) => goTo(index + 1, event)}
-            className="absolute right-1 top-1/2 -translate-y-1/2 bg-white/80 backdrop-blur-sm border border-white/60 shadow-md rounded-full w-6 h-6 flex items-center justify-center text-sm"
+            className="absolute right-1 top-1/2 -translate-y-1/2 bg-white/80 dark:bg-black/40 backdrop-blur-sm border border-white/60 dark:border-white/10 shadow-md dark:shadow-none rounded-full w-6 h-6 flex items-center justify-center text-sm"
           >
             ›
           </button>
