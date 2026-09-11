@@ -1,5 +1,5 @@
 import type { Apartment } from '@prisma/client';
-import { STATUS_LABELS, MAKLERVERTRAG_LABELS, calculateMaklerFee } from './format';
+import { STATUS_LABELS, MAKLERVERTRAG_LABELS, calculateMaklerFee, viewingDateSortRank } from './format';
 
 export type FieldType = 'text' | 'number' | 'boolean' | 'select';
 
@@ -64,6 +64,16 @@ export const FIELDS: FieldDef[] = [
     computed: (apartment) => calculateMaklerFee(apartment.price, apartment.maklerprovisionPercent),
   },
   { key: 'createdAt', label: 'Date added', type: 'number', filterable: false, sortable: true, tableColumn: false, defaultColumn: false },
+  {
+    key: 'viewingDate',
+    label: 'Viewing date',
+    type: 'number',
+    filterable: false,
+    sortable: true,
+    tableColumn: false,
+    defaultColumn: false,
+    computed: (apartment) => viewingDateSortRank(apartment.viewingDate),
+  },
 ];
 
 export function getField(key: string): FieldDef | undefined {

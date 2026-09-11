@@ -20,14 +20,37 @@ export function formatViewingDate(viewingDate: string | null | undefined): strin
   return `${day}.${month}.${year}`;
 }
 
+// Local date parts, not toISOString() — that's UTC and can shift the
+// calendar day near midnight depending on timezone.
+function localDateString(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
 export function isUpcomingViewingDate(viewingDate: string, today: Date = new Date()): boolean {
-  // Local date parts, not toISOString() — that's UTC and can shift the
-  // calendar day near midnight depending on timezone, same reasoning as
-  // formatViewingDate above.
-  const year = today.getFullYear();
-  const month = String(today.getMonth() + 1).padStart(2, '0');
-  const day = String(today.getDate()).padStart(2, '0');
-  return viewingDate >= `${year}-${month}-${day}`;
+  return viewingDate >= localDateString(today);
+}
+
+// Days since the UTC epoch for a YYYY-MM-DD string. Date.UTC is used purely
+// as calendar-day arithmetic (no real timezone meaning) so the difference
+// between two such numbers is an exact, DST-immune day count.
+function toDayNumber(dateString: string): number {
+  const [year, month, day] = dateString.split('-').map(Number);
+  return Date.UTC(year, month - 1, day) / 86_400_000;
+}
+
+const PAST_OFFSET = 1_000_000;
+
+// A single ascending sort key that puts the soonest upcoming/today viewing
+// first, then past viewings most-recent-first, then (via null, which the
+// generic sorter already places last) apartments with no viewing date at
+// all.
+export function viewingDateSortRank(viewingDate: string | null | undefined, today: Date = new Date()): number | null {
+  if (!viewingDate) return null;
+  const diffDays = toDayNumber(viewingDate) - toDayNumber(localDateString(today));
+  return diffDays >= 0 ? diffDays : PAST_OFFSET - diffDays;
 }
 
 export function formatAreaAndRooms(

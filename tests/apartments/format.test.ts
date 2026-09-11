@@ -5,6 +5,7 @@ import {
   calculateMaklerFee,
   formatViewingDate,
   isUpcomingViewingDate,
+  viewingDateSortRank,
 } from '@/lib/apartments/format';
 
 describe('formatPrice', () => {
@@ -74,5 +75,35 @@ describe('isUpcomingViewingDate', () => {
 
   it('is false for a past date', () => {
     expect(isUpcomingViewingDate('2026-09-14', today)).toBe(false);
+  });
+});
+
+describe('viewingDateSortRank', () => {
+  const today = new Date('2026-09-15T14:00:00');
+
+  it('returns null when there is no viewing date', () => {
+    expect(viewingDateSortRank(null, today)).toBeNull();
+    expect(viewingDateSortRank(undefined, today)).toBeNull();
+  });
+
+  it('ranks today as 0 and later upcoming dates higher, soonest first', () => {
+    const todayRank = viewingDateSortRank('2026-09-15', today)!;
+    const tomorrowRank = viewingDateSortRank('2026-09-16', today)!;
+    const nextWeekRank = viewingDateSortRank('2026-09-22', today)!;
+    expect(todayRank).toBe(0);
+    expect(todayRank).toBeLessThan(tomorrowRank);
+    expect(tomorrowRank).toBeLessThan(nextWeekRank);
+  });
+
+  it('ranks every upcoming date below every past date', () => {
+    const farFutureRank = viewingDateSortRank('2027-01-01', today)!;
+    const yesterdayRank = viewingDateSortRank('2026-09-14', today)!;
+    expect(farFutureRank).toBeLessThan(yesterdayRank);
+  });
+
+  it('ranks past dates most-recent-first', () => {
+    const yesterdayRank = viewingDateSortRank('2026-09-14', today)!;
+    const lastMonthRank = viewingDateSortRank('2026-08-15', today)!;
+    expect(yesterdayRank).toBeLessThan(lastMonthRank);
   });
 });

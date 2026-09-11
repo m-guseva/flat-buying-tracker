@@ -25,7 +25,9 @@ export function ApartmentBrowser({ apartments }: { apartments: ApartmentWithRela
   const [columns, setColumns] = useLocalStorageState<string[]>('flatTracker.tableColumns', DEFAULT_TABLE_COLUMNS);
   const [search, setSearch] = useState('');
   const [filters, setFilters] = useState<FilterCondition[]>([]);
-  const [sortCriteria, setSortCriteria] = useState<SortCriterion[]>([]);
+  const [sortCriteria, setSortCriteria] = useState<SortCriterion[]>([
+    { id: 'default-viewing-date', field: 'viewingDate', direction: 'asc' },
+  ]);
   const [openPanel, setOpenPanel] = useState<OpenPanel>(null);
   const [showAddCard, setShowAddCard] = useState(false);
 

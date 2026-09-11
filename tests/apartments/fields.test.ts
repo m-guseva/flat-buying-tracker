@@ -64,6 +64,13 @@ describe('fields catalog', () => {
     expect(getFieldValue(apartment, 'maklerFee')).toBeNull();
   });
 
+  it('computes viewingDate as a sort rank, null when there is no date', () => {
+    const withDate = { viewingDate: '2026-09-15' } as Apartment;
+    const withoutDate = { viewingDate: null } as Apartment;
+    expect(getFieldValue(withDate, 'viewingDate')).toEqual(expect.any(Number));
+    expect(getFieldValue(withoutDate, 'viewingDate')).toBeNull();
+  });
+
   it('filters the catalog into filterable/sortable/table-column subsets', () => {
     expect(FILTERABLE_FIELDS.length).toBeGreaterThan(0);
     expect(FILTERABLE_FIELDS.every((f) => f.filterable)).toBe(true);
