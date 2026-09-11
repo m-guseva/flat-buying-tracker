@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import Link from 'next/link';
 import type { Apartment, Document, Image as ApartmentImage } from '@prisma/client';
 import { ApartmentCard } from '@/components/ApartmentCard';
 import { AddApartmentCard } from '@/components/AddApartmentCard';
@@ -83,6 +84,9 @@ export function ApartmentBrowser({ apartments }: { apartments: ApartmentWithRela
         >
           Sort{sortCriteria.length > 0 ? ` (${sortCriteria.length})` : ''}
         </button>
+        <Link href="/scratchpad" className="btn-secondary">
+          Scratchpad
+        </Link>
         {viewMode === 'table' && (
           <>
             <button

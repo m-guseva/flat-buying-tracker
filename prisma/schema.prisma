@@ -59,6 +59,12 @@ model Document {
   createdAt   DateTime  @default(now())
 }
 
+model Scratchpad {
+  id        String   @id
+  content   String
+  updatedAt DateTime @updatedAt
+}
+
 model StatusHistory {
   id          String    @id @default(cuid())
   apartmentId String
