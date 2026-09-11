@@ -30,6 +30,7 @@ export function parseApartmentPropertiesForm(formData: FormData): UpdateApartmen
 
   const result: UpdateApartmentInput = {};
   const title = getString('title');
+  const sourceUrl = getString('sourceUrl');
   const address = getString('address');
   const price = getNumber('price');
   const livingArea = getNumber('livingArea');
@@ -46,6 +47,7 @@ export function parseApartmentPropertiesForm(formData: FormData): UpdateApartmen
   const personalRating = getNumber('personalRating');
 
   if (title !== undefined) result.title = title;
+  if (sourceUrl !== undefined) result.sourceUrl = sourceUrl;
   if (address !== undefined) result.address = address;
   if (price !== undefined) result.price = price;
   if (livingArea !== undefined) result.livingArea = livingArea;

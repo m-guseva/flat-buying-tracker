@@ -49,6 +49,16 @@ export function PropertiesForm({
             <input name="title" defaultValue={apartment.title ?? ''} className="glass-input block w-full mt-1" />
           </label>
           <label className="block text-sm">
+            Listing URL
+            <input
+              name="sourceUrl"
+              type="url"
+              placeholder="https://…"
+              defaultValue={apartment.sourceUrl ?? ''}
+              className="glass-input block w-full mt-1"
+            />
+          </label>
+          <label className="block text-sm">
             Address
             <input name="address" defaultValue={apartment.address ?? ''} className="glass-input block w-full mt-1" />
           </label>

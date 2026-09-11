@@ -33,6 +33,7 @@ describe('parseApartmentPropertiesForm', () => {
   it('parses all property fields including booleans', () => {
     const formData = new FormData();
     formData.set('title', 'Updated title');
+    formData.set('sourceUrl', 'https://www.immobilienscout24.de/expose/123456');
     formData.set('floor', '3');
     formData.set('balcony', 'true');
     formData.set('elevator', 'false');
@@ -43,6 +44,7 @@ describe('parseApartmentPropertiesForm', () => {
 
     expect(input).toEqual({
       title: 'Updated title',
+      sourceUrl: 'https://www.immobilienscout24.de/expose/123456',
       floor: '3',
       balcony: true,
       elevator: false,
