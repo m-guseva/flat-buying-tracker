@@ -1,5 +1,11 @@
 import { describe, it, expect } from 'vitest';
-import { formatPrice, formatAreaAndRooms, calculateMaklerFee, formatViewingDate } from '@/lib/apartments/format';
+import {
+  formatPrice,
+  formatAreaAndRooms,
+  calculateMaklerFee,
+  formatViewingDate,
+  isUpcomingViewingDate,
+} from '@/lib/apartments/format';
 
 describe('formatPrice', () => {
   it('formats a price in German locale', () => {
@@ -52,5 +58,21 @@ describe('formatViewingDate', () => {
   it('returns null for missing input', () => {
     expect(formatViewingDate(null)).toBeNull();
     expect(formatViewingDate(undefined)).toBeNull();
+  });
+});
+
+describe('isUpcomingViewingDate', () => {
+  const today = new Date('2026-09-15T14:00:00');
+
+  it('is true for today', () => {
+    expect(isUpcomingViewingDate('2026-09-15', today)).toBe(true);
+  });
+
+  it('is true for a future date', () => {
+    expect(isUpcomingViewingDate('2026-09-16', today)).toBe(true);
+  });
+
+  it('is false for a past date', () => {
+    expect(isUpcomingViewingDate('2026-09-14', today)).toBe(false);
   });
 });

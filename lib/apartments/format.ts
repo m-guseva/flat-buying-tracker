@@ -20,6 +20,16 @@ export function formatViewingDate(viewingDate: string | null | undefined): strin
   return `${day}.${month}.${year}`;
 }
 
+export function isUpcomingViewingDate(viewingDate: string, today: Date = new Date()): boolean {
+  // Local date parts, not toISOString() — that's UTC and can shift the
+  // calendar day near midnight depending on timezone, same reasoning as
+  // formatViewingDate above.
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, '0');
+  const day = String(today.getDate()).padStart(2, '0');
+  return viewingDate >= `${year}-${month}-${day}`;
+}
+
 export function formatAreaAndRooms(
   livingArea: number | null | undefined,
   rooms: number | null | undefined,
