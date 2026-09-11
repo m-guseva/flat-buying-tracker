@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p ${PORT:-3000}",
+    "postinstall": "prisma generate",
     "lint": "next lint",
     "pretest": "DATABASE_URL=file:../data/test.db prisma db push --skip-generate --accept-data-loss",
     "test": "vitest run"
