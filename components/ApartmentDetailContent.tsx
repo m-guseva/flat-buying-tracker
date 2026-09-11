@@ -66,15 +66,6 @@ export function ApartmentDetailContent({
             <button type="submit" className="btn-secondary">Update status</button>
           </fieldset>
         </form>
-
-        <h3 className="text-sm font-medium text-gray-500">Status history</h3>
-        <ul className="text-sm space-y-1">
-          {apartment.statusHistory.map((entry) => (
-            <li key={entry.id}>
-              {entry.timestamp.toLocaleDateString('de-DE')} — {STATUS_LABELS[entry.status]}
-            </li>
-          ))}
-        </ul>
       </section>
 
       <section className="glass-panel p-4 space-y-3">
