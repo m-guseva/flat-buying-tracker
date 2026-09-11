@@ -75,6 +75,9 @@ export const immoscout24Scraper: Scraper = {
     // container that holds the balcony/lift tags as human-readable text.
     if (/einbauküche/i.test($('#is24-boolean-criteria').text())) result.kitchen = true;
 
+    const energieausweis = $('.is24qa-energieeffizienzklasse img').attr('alt');
+    if (energieausweis) result.energieausweis = energieausweis;
+
     const localSrcs = $('#is24-gallery-entry-point')
       .find('img[data-testid="gallery-entry-image"]')
       .map((_, img) => $(img).attr('src') ?? '')

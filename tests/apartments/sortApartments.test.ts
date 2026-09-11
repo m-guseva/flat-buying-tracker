@@ -17,6 +17,7 @@ function makeApartment(overrides: Partial<Apartment> = {}): Apartment {
     elevator: null,
     kitchen: null,
     condition: null,
+    energieausweis: null,
     hausgeld: null,
     maklerprovisionPercent: null,
     locationRating: null,

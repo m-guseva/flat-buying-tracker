@@ -9,6 +9,7 @@ export interface ScrapedApartment {
   elevator?: boolean;
   kitchen?: boolean;
   condition?: string;
+  energieausweis?: string;
   hausgeld?: number;
   maklerprovisionPercent?: number;
   images: string[];

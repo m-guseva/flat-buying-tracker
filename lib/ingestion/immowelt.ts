@@ -85,6 +85,9 @@ export const immoweltScraper: Scraper = {
       if (/einbauküche/i.test(text)) result.kitchen = true;
     });
 
+    const energieausweis = $('[data-testid="cdp-preview-scale-highlighted"]').first().text().trim();
+    if (energieausweis) result.energieausweis = energieausweis;
+
     const localSrcs = $('[data-testid="cdp-medias-overview"]')
       .find('img')
       .map((_, img) => $(img).attr('src') ?? '')

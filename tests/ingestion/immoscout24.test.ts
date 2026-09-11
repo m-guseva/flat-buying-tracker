@@ -46,6 +46,10 @@ describe('immoscout24Scraper.parse', () => {
     expect(result.kitchen).toBeUndefined();
   });
 
+  it('extracts the energy efficiency class from the indicator image alt text', () => {
+    expect(result.energieausweis).toBe('E');
+  });
+
   it('detects kitchen when "Einbauküche" is mentioned in the boolean-criteria section', () => {
     const htmlWithKitchen = fixtureHtml.replace(
       'id="is24-boolean-criteria">',

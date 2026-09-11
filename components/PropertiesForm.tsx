@@ -6,6 +6,7 @@ import type { Apartment } from '@prisma/client';
 import { updateApartmentPropertiesAction } from '@/app/actions/apartments';
 import { calculateMaklerFee, formatPrice } from '@/lib/apartments/format';
 import { isReadOnly } from '@/lib/readOnly';
+import { ENERGIEAUSWEIS_GRADES } from '@/lib/apartments/fields';
 
 export function PropertiesForm({
   apartment,
@@ -98,6 +99,15 @@ export function PropertiesForm({
           <label className="block text-sm">
             Condition
             <input name="condition" defaultValue={apartment.condition ?? ''} className="glass-input block w-full mt-1" />
+          </label>
+          <label className="block text-sm">
+            Energieausweis
+            <select name="energieausweis" defaultValue={apartment.energieausweis ?? ''} className="glass-input block w-full mt-1">
+              <option value="">Unknown</option>
+              {ENERGIEAUSWEIS_GRADES.map((grade) => (
+                <option key={grade} value={grade}>{grade}</option>
+              ))}
+            </select>
           </label>
           <label className="block text-sm">
             Hausgeld

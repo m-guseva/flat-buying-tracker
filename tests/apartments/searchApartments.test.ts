@@ -19,6 +19,7 @@ function makeApartment(overrides: Partial<ApartmentWithDocuments> = {}): Apartme
     elevator: null,
     kitchen: null,
     condition: null,
+    energieausweis: null,
     hausgeld: null,
     maklerprovisionPercent: null,
     locationRating: null,

@@ -24,6 +24,7 @@ model Apartment {
   elevator            Boolean?
   kitchen             Boolean?
   condition           String?
+  energieausweis      String?
   hausgeld            Float?
   maklerprovisionPercent Float?
   locationRating      Int?

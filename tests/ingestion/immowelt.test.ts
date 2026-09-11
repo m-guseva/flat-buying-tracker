@@ -49,6 +49,10 @@ describe('immoweltScraper.parse', () => {
     expect(result.condition).toBeUndefined();
   });
 
+  it('extracts the energy efficiency class from the highlighted scale marker', () => {
+    expect(result.energieausweis).toBe('B');
+  });
+
   it('extracts all 13 real gallery images, excluding similar listings', () => {
     expect(result.images).toEqual([
       'https://mms.immowelt.de/2/b/6/7/2b67b692-e8f0-4b0f-b9fb-be45f34a8978.jpg?ci_seal=f0bbac39e4223fdf2260b7399e829880a3ce2ec6',

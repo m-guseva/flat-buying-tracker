@@ -24,6 +24,10 @@ function toOptions(labels: Record<string, string>): FieldOption[] {
   return Object.entries(labels).map(([value, label]) => ({ value, label }));
 }
 
+// The official German energy-efficiency scale (EnEV/GEG), worst to best is
+// H..A+ — listed here best-first to match how it's shown everywhere else.
+export const ENERGIEAUSWEIS_GRADES = ['A+', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+
 export const FIELDS: FieldDef[] = [
   { key: 'address', label: 'Address', type: 'text', filterable: true, sortable: false, tableColumn: true, defaultColumn: true },
   { key: 'price', label: 'Price', type: 'number', filterable: true, sortable: true, tableColumn: true, defaultColumn: true },
@@ -34,6 +38,16 @@ export const FIELDS: FieldDef[] = [
   { key: 'elevator', label: 'Elevator', type: 'boolean', filterable: true, sortable: false, tableColumn: true, defaultColumn: false },
   { key: 'kitchen', label: 'Kitchen', type: 'boolean', filterable: true, sortable: false, tableColumn: true, defaultColumn: false },
   { key: 'condition', label: 'Condition', type: 'text', filterable: true, sortable: false, tableColumn: true, defaultColumn: false },
+  {
+    key: 'energieausweis',
+    label: 'Energieausweis',
+    type: 'select',
+    filterable: true,
+    sortable: false,
+    tableColumn: true,
+    defaultColumn: false,
+    options: ENERGIEAUSWEIS_GRADES.map((grade) => ({ value: grade, label: grade })),
+  },
   { key: 'hausgeld', label: 'Hausgeld', type: 'number', filterable: true, sortable: true, tableColumn: true, defaultColumn: true },
   { key: 'locationRating', label: 'Location rating', type: 'number', filterable: true, sortable: true, tableColumn: true, defaultColumn: false },
   { key: 'personalRating', label: 'Personal rating', type: 'number', filterable: true, sortable: true, tableColumn: true, defaultColumn: false },
