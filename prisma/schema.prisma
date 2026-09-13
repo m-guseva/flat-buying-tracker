@@ -39,6 +39,7 @@ model Apartment {
   images        Image[]
   documents     Document[]
   statusHistory StatusHistory[]
+  proCons       ProConItem[]
 }
 
 model Image {
@@ -64,6 +65,17 @@ model Scratchpad {
   id        String   @id
   content   String
   updatedAt DateTime @updatedAt
+}
+
+model ProConItem {
+  id          String    @id @default(cuid())
+  apartmentId String
+  apartment   Apartment @relation(fields: [apartmentId], references: [id], onDelete: Cascade)
+  type        String
+  text        String    @default("")
+  weight      Int       @default(3)
+  order       Int
+  createdAt   DateTime  @default(now())
 }
 
 model StatusHistory {

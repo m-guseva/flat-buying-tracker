@@ -2,18 +2,21 @@
 
 import { useTransition, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
-import type { Apartment } from '@prisma/client';
+import type { Apartment, ProConItem } from '@prisma/client';
 import { updateApartmentPropertiesAction } from '@/app/actions/apartments';
 import { calculateMaklerFee, formatPrice } from '@/lib/apartments/format';
 import { isReadOnly } from '@/lib/readOnly';
 import { ENERGIEAUSWEIS_GRADES } from '@/lib/apartments/fields';
+import { ProConEditor } from '@/components/ProConEditor';
 
 export function PropertiesForm({
   apartment,
+  proCons,
   formId,
   isModal,
 }: {
   apartment: Apartment;
+  proCons: ProConItem[];
   formId: string;
   isModal: boolean;
 }) {
@@ -148,6 +151,7 @@ export function PropertiesForm({
             Personal rating (1-5)
             <input name="personalRating" type="number" min={1} max={5} defaultValue={apartment.personalRating ?? ''} className="glass-input block w-full mt-1" />
           </label>
+          <ProConEditor apartmentId={apartment.id} items={proCons} />
         </section>
       </fieldset>
     </form>

@@ -71,6 +71,28 @@ describe('fields catalog', () => {
     expect(getFieldValue(withoutDate, 'viewingDate')).toBeNull();
   });
 
+  it('joins pro/con item text into a comma-separated string per type, ignoring blanks', () => {
+    const apartment = {
+      proCons: [
+        { type: 'PRO', text: 'Central location' },
+        { type: 'CON', text: 'Noisy street' },
+        { type: 'PRO', text: '  ' },
+        { type: 'PRO', text: 'Balcony' },
+      ],
+    } as unknown as Apartment;
+
+    expect(getFieldValue(apartment, 'pros')).toBe('Central location, Balcony');
+    expect(getFieldValue(apartment, 'cons')).toBe('Noisy street');
+  });
+
+  it('computes pros/cons as null when there are no items of that type', () => {
+    const withNoRelation = {} as Apartment;
+    const withEmptyList = { proCons: [] } as unknown as Apartment;
+
+    expect(getFieldValue(withNoRelation, 'pros')).toBeNull();
+    expect(getFieldValue(withEmptyList, 'cons')).toBeNull();
+  });
+
   it('filters the catalog into filterable/sortable/table-column subsets', () => {
     expect(FILTERABLE_FIELDS.length).toBeGreaterThan(0);
     expect(FILTERABLE_FIELDS.every((f) => f.filterable)).toBe(true);

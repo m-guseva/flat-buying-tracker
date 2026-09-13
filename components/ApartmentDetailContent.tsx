@@ -1,4 +1,4 @@
-import type { Apartment, Document as ApartmentDocument, Image as ApartmentImage, StatusHistory } from '@prisma/client';
+import type { Apartment, Document as ApartmentDocument, Image as ApartmentImage, ProConItem, StatusHistory } from '@prisma/client';
 import { STATUS_LABELS, STATUS_ORDER, MAKLERVERTRAG_LABELS, SOURCE_LABELS } from '@/lib/apartments/format';
 import {
   updateApartmentStatusAction,
@@ -20,6 +20,7 @@ type ApartmentWithRelations = Apartment & {
   images: ApartmentImage[];
   documents: ApartmentDocument[];
   statusHistory: StatusHistory[];
+  proCons: ProConItem[];
 };
 
 const PROPERTIES_FORM_ID = 'apartment-properties-form';
@@ -106,7 +107,7 @@ export function ApartmentDetailContent({
         </div>
       </section>
 
-      <PropertiesForm apartment={apartment} formId={PROPERTIES_FORM_ID} isModal={isModal} />
+      <PropertiesForm apartment={apartment} proCons={apartment.proCons} formId={PROPERTIES_FORM_ID} isModal={isModal} />
 
       <section className="glass-panel p-4 space-y-3">
         <h2 className="text-lg font-medium">Documents</h2>

@@ -1,7 +1,11 @@
-import type { Apartment } from '@prisma/client';
+import type { Apartment, ProConItem } from '@prisma/client';
 import { STATUS_LABELS, MAKLERVERTRAG_LABELS, calculateMaklerFee, viewingDateSortRank } from './format';
 
 export type FieldType = 'text' | 'number' | 'boolean' | 'select';
+
+// proCons is optional so plain Apartment values (fetched without the
+// relation) still satisfy this type everywhere getFieldValue is called.
+type ApartmentWithProCons = Apartment & { proCons?: ProConItem[] };
 
 export interface FieldOption {
   value: string;
@@ -17,7 +21,16 @@ export interface FieldDef {
   tableColumn: boolean;
   defaultColumn: boolean;
   options?: FieldOption[];
-  computed?: (apartment: Apartment) => unknown;
+  computed?: (apartment: ApartmentWithProCons) => unknown;
+}
+
+function joinProConText(apartment: ApartmentWithProCons, type: 'PRO' | 'CON'): string | null {
+  const text = (apartment.proCons ?? [])
+    .filter((item) => item.type === type)
+    .map((item) => item.text.trim())
+    .filter((text) => text.length > 0)
+    .join(', ');
+  return text.length > 0 ? text : null;
 }
 
 function toOptions(labels: Record<string, string>): FieldOption[] {
@@ -65,6 +78,26 @@ export const FIELDS: FieldDef[] = [
   },
   { key: 'createdAt', label: 'Date added', type: 'number', filterable: false, sortable: true, tableColumn: false, defaultColumn: false },
   {
+    key: 'pros',
+    label: 'Pros',
+    type: 'text',
+    filterable: false,
+    sortable: false,
+    tableColumn: true,
+    defaultColumn: false,
+    computed: (apartment) => joinProConText(apartment, 'PRO'),
+  },
+  {
+    key: 'cons',
+    label: 'Cons',
+    type: 'text',
+    filterable: false,
+    sortable: false,
+    tableColumn: true,
+    defaultColumn: false,
+    computed: (apartment) => joinProConText(apartment, 'CON'),
+  },
+  {
     key: 'viewingDate',
     label: 'Viewing date',
     type: 'number',
@@ -80,7 +113,7 @@ export function getField(key: string): FieldDef | undefined {
   return FIELDS.find((field) => field.key === key);
 }
 
-export function getFieldValue(apartment: Apartment, key: string): unknown {
+export function getFieldValue(apartment: ApartmentWithProCons, key: string): unknown {
   const field = getField(key);
   if (field?.computed) return field.computed(apartment);
   return (apartment as unknown as Record<string, unknown>)[key];

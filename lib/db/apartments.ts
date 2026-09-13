@@ -56,6 +56,7 @@ export async function getApartment(id: string) {
       images: { orderBy: { order: 'asc' } },
       documents: { orderBy: [{ createdAt: 'desc' }, { id: 'desc' }] },
       statusHistory: { orderBy: [{ timestamp: 'desc' }, { id: 'desc' }] },
+      proCons: { orderBy: { order: 'asc' } },
     },
   });
 }
@@ -65,6 +66,7 @@ export async function listApartments() {
     include: {
       images: { orderBy: { order: 'asc' } },
       documents: true,
+      proCons: { orderBy: { order: 'asc' } },
     },
     orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
   });
