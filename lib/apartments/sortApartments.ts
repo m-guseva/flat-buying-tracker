@@ -11,6 +11,7 @@ export interface SortCriterion {
 }
 
 const STATUS_ORDER = Object.keys(STATUS_LABELS);
+const CANCELED_STATUSES = new Set(['CANCELED_INTERNALLY', 'CANCELED_WITH_AGENT']);
 
 function comparableValue(apartment: Apartment, field: string): number | null {
   if (field === 'status') {
@@ -37,8 +38,19 @@ function compareBy(a: Apartment, b: Apartment, criterion: SortCriterion): number
 }
 
 export function sortApartments<T extends Apartment>(apartments: T[], criteria: SortCriterion[]): T[] {
-  if (criteria.length === 0) return apartments;
+  // Canceled apartments always sink to the bottom, as a bucket applied before
+  // the user's own criteria — unless one of those criteria already sorts by
+  // status itself, in which case that's an explicit, more specific choice
+  // about where canceled statuses land (STATUS_ORDER already places them
+  // last for an ascending sort) and this default shouldn't fight it.
+  const bucketByCanceled = !criteria.some((criterion) => criterion.field === 'status');
+
   return [...apartments].sort((a, b) => {
+    if (bucketByCanceled) {
+      const aCanceled = CANCELED_STATUSES.has(a.status);
+      const bCanceled = CANCELED_STATUSES.has(b.status);
+      if (aCanceled !== bCanceled) return aCanceled ? 1 : -1;
+    }
     for (const criterion of criteria) {
       const result = compareBy(a, b, criterion);
       if (result !== 0) return result;

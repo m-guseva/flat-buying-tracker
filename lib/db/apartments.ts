@@ -8,7 +8,9 @@ export type Status =
   | 'RECEIVED_EXPOSE'
   | 'SETUP_VIEWING'
   | 'POST_VIEWING'
-  | 'INTEREST_FOR_PURCHASE';
+  | 'INTEREST_FOR_PURCHASE'
+  | 'CANCELED_INTERNALLY'
+  | 'CANCELED_WITH_AGENT';
 
 export type MaklervertragStatus = 'NOT_RECEIVED' | 'RECEIVED' | 'SIGNED' | 'WIDERRUF';
 

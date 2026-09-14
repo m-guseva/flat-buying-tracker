@@ -25,6 +25,8 @@ describe('fields catalog', () => {
       'SETUP_VIEWING',
       'POST_VIEWING',
       'INTEREST_FOR_PURCHASE',
+      'CANCELED_INTERNALLY',
+      'CANCELED_WITH_AGENT',
     ]);
     expect(status?.options?.find((o) => o.value === 'CONTACTED')?.label).toBe('Contacted');
   });

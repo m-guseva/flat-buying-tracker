@@ -94,6 +94,33 @@ describe('sortApartments', () => {
     expect(sortApartments([a, b], []).map((x) => x.id)).toEqual(['a', 'b']);
   });
 
+  it('always sorts canceled apartments (either canceled status) to the end, even with no sort criteria', () => {
+    const active = makeApartment({ id: 'active', status: 'CONTACTED' });
+    const canceledInHead = makeApartment({ id: 'canceled-in-head', status: 'CANCELED_INTERNALLY' });
+    const canceledWithAgent = makeApartment({ id: 'canceled-with-agent', status: 'CANCELED_WITH_AGENT' });
+    const result = sortApartments([canceledWithAgent, active, canceledInHead], []);
+    expect(result.map((a) => a.id)).toEqual(['active', 'canceled-with-agent', 'canceled-in-head']);
+  });
+
+  it('buckets canceled apartments last while still applying the chosen sort within each bucket', () => {
+    const cheapActive = makeApartment({ id: 'cheap-active', status: 'CONTACTED', price: 100 });
+    const expensiveActive = makeApartment({ id: 'expensive-active', status: 'CONTACTED', price: 300 });
+    const cheapCanceled = makeApartment({ id: 'cheap-canceled', status: 'CANCELED_INTERNALLY', price: 50 });
+    const expensiveCanceled = makeApartment({ id: 'expensive-canceled', status: 'CANCELED_INTERNALLY', price: 500 });
+    const result = sortApartments(
+      [expensiveCanceled, expensiveActive, cheapCanceled, cheapActive],
+      [{ id: 's1', field: 'price', direction: 'asc' }],
+    );
+    expect(result.map((a) => a.id)).toEqual(['cheap-active', 'expensive-active', 'cheap-canceled', 'expensive-canceled']);
+  });
+
+  it('lets an explicit status sort criterion override the canceled-last bucketing', () => {
+    const active = makeApartment({ id: 'active', status: 'CONTACTED' });
+    const canceled = makeApartment({ id: 'canceled', status: 'CANCELED_INTERNALLY' });
+    const result = sortApartments([active, canceled], [{ id: 's1', field: 'status', direction: 'desc' }]);
+    expect(result.map((a) => a.id)).toEqual(['canceled', 'active']);
+  });
+
   it('does not mutate the input array', () => {
     const a = makeApartment({ id: 'a', price: 300 });
     const b = makeApartment({ id: 'b', price: 100 });

@@ -70,6 +70,8 @@ export const STATUS_LABELS: Record<string, string> = {
   SETUP_VIEWING: 'Setup viewing',
   POST_VIEWING: 'Post-viewing stage',
   INTEREST_FOR_PURCHASE: 'Interest for purchase',
+  CANCELED_INTERNALLY: 'Canceled in my head',
+  CANCELED_WITH_AGENT: 'Communicated cancelation to agent',
 };
 
 export const STATUS_ORDER = Object.keys(STATUS_LABELS);
