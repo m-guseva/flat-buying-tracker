@@ -5,6 +5,7 @@ import {
   formatAreaAndRooms,
   formatViewingDate,
   isUpcomingViewingDate,
+  isCanceledStatus,
   STATUS_LABELS,
 } from '@/lib/apartments/format';
 import { ImageCarousel } from '@/components/ImageCarousel';
@@ -17,9 +18,15 @@ type ApartmentCardProps = {
 export function ApartmentCard({ apartment }: ApartmentCardProps) {
   const price = formatPrice(apartment.price);
   const areaAndRooms = formatAreaAndRooms(apartment.livingArea, apartment.rooms);
+  const canceled = isCanceledStatus(apartment.status);
 
   return (
-    <Link href={`/apartments/${apartment.id}`} className="relative block glass-card overflow-hidden">
+    <Link
+      href={`/apartments/${apartment.id}`}
+      className={`relative block glass-card overflow-hidden ${
+        canceled ? 'grayscale opacity-60 hover:grayscale-0 hover:opacity-100' : ''
+      }`}
+    >
       <DeleteApartmentButton apartmentId={apartment.id} />
       <div className="aspect-[4/3] bg-white/40 dark:bg-white/5">
         <ImageCarousel apartmentId={apartment.id} images={apartment.images} alt={apartment.title ?? 'Apartment'} />

@@ -76,6 +76,12 @@ export const STATUS_LABELS: Record<string, string> = {
 
 export const STATUS_ORDER = Object.keys(STATUS_LABELS);
 
+const CANCELED_STATUSES = new Set(['CANCELED_INTERNALLY', 'CANCELED_WITH_AGENT']);
+
+export function isCanceledStatus(status: string): boolean {
+  return CANCELED_STATUSES.has(status);
+}
+
 export const MAKLERVERTRAG_LABELS: Record<string, string> = {
   NOT_RECEIVED: 'Not received',
   RECEIVED: 'Received',

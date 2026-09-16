@@ -1,5 +1,5 @@
 import type { Apartment } from '@prisma/client';
-import { STATUS_LABELS } from './format';
+import { STATUS_LABELS, isCanceledStatus } from './format';
 import { getFieldValue } from './fields';
 
 export type SortDirection = 'asc' | 'desc';
@@ -11,7 +11,6 @@ export interface SortCriterion {
 }
 
 const STATUS_ORDER = Object.keys(STATUS_LABELS);
-const CANCELED_STATUSES = new Set(['CANCELED_INTERNALLY', 'CANCELED_WITH_AGENT']);
 
 function comparableValue(apartment: Apartment, field: string): number | null {
   if (field === 'status') {
@@ -47,8 +46,8 @@ export function sortApartments<T extends Apartment>(apartments: T[], criteria: S
 
   return [...apartments].sort((a, b) => {
     if (bucketByCanceled) {
-      const aCanceled = CANCELED_STATUSES.has(a.status);
-      const bCanceled = CANCELED_STATUSES.has(b.status);
+      const aCanceled = isCanceledStatus(a.status);
+      const bCanceled = isCanceledStatus(b.status);
       if (aCanceled !== bCanceled) return aCanceled ? 1 : -1;
     }
     for (const criterion of criteria) {
