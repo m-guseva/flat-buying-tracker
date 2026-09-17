@@ -115,9 +115,9 @@ export function ApartmentDetailContent({
           {apartment.documents.map((document) => (
             <li
               key={document.id}
-              className="flex items-center gap-3 bg-white/60 dark:bg-white/5 border border-white/70 dark:border-white/10 rounded-lg px-3 py-2"
+              className="flex flex-wrap items-center gap-x-3 gap-y-1 bg-white/60 dark:bg-white/5 border border-white/70 dark:border-white/10 rounded-lg px-3 py-2"
             >
-              <span>📄 {document.filename}</span>
+              <span className="min-w-0 break-all">📄 {document.filename}</span>
               <span className="text-gray-400 dark:text-white/30">Added {document.createdAt.toLocaleDateString('de-DE')}</span>
               <a href={`/api/files/${document.filePath}`} target="_blank" rel="noreferrer" className="text-[var(--accent-1)] hover:opacity-80">
                 Open
