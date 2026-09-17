@@ -63,7 +63,7 @@ export function ApartmentDetailContent({
 
       <section className="glass-panel p-4 space-y-3">
         <h2 className="text-lg font-medium">Process / status</h2>
-        <div className="flex gap-4">
+        <div className="flex flex-col sm:flex-row gap-4">
           <div>
             <span className="block text-xs text-gray-500 dark:text-white/40 mb-1">Status</span>
             <form action={updateApartmentStatusAction.bind(null, apartment.id)}>
